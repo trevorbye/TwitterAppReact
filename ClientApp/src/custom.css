@@ -1,0 +1,114 @@
+.login-container {
+    margin-top: 250px;
+}
+
+.fa-times-circle {
+    color: #dc3545;
+}
+
+.fa-check, .fa-check-circle, .fa-twitter-square {
+    color: #28a745;
+}
+
+.home-icons {
+    color: #1DA1F2 !important;
+}
+
+    .home-icons:hover {
+        color: #1a90da;
+        cursor: pointer;
+    }
+
+.tweet {
+    cursor: pointer;
+    background-color: #1DA1F2 !important;
+    border-color: #1DA1F2 !important;
+}
+
+    .tweet:hover:not([disabled]) {
+        background-color: #0488D9 !important;
+        border-color: #0488D9 !important;
+    }
+
+    .tweet:disabled {
+        cursor: not-allowed;
+    }
+
+.twitter, .fa-microsoft {
+    color: #1DA1F2;
+}
+
+.border-common {
+    border: 1px solid rgba(0,0,0,.125);
+}
+
+.settings-pane {
+    margin: -.8rem -1.3rem !important;
+}
+
+    .settings-pane .fas,
+    .settings-pane .collapse {
+        cursor: pointer;
+    }
+
+#redirect-card {
+    margin-top: 50px;
+}
+
+.fa-exclamation-triangle {
+    color: #ffc107;
+}
+
+.fa-compress {
+    color: #d4d4d4;
+}
+
+    .fa-compress:hover {
+        color: #a8a8a8;
+    }
+
+.fa-user {
+    color: #2b2b2b;
+}
+
+.fa-clock, .fa-toggle-off {
+    color: gray;
+}
+
+.fa-toggle-on {
+    color: #007bff;
+}
+
+.wrapped {
+    word-wrap: break-word;
+}
+
+.scroll-group {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.navbar-dark .navbar-nav .nav-link {
+    color: rgba(255, 255, 255, .7) !important;
+}
+
+.trash-hover:hover {
+    color: #a1a1a1;
+    cursor: pointer;
+}
+
+.thumbnail-item:hover {
+    background-color: #ebebec;
+}
+
+.main-container {
+    margin-top: 150px;
+}
+
+.fa-react {
+    color: #dbdbdb;
+}
+
+.fa-user, .fa-clock {
+    vertical-align: middle;
+}
