@@ -2,7 +2,7 @@
 import { BasicTweetBlock } from './tweet-components/BasicTweetBlock';
 
 import axios from 'axios';
-import { getTokenSilent } from './auth-utils/auth-config';
+import { getAuthHeadersSilent } from './auth-utils/auth-config';
 import { getHumanReadableTime, localeStatusTime } from './utils/time-util';
 
 export class TweetQueue extends Component {
@@ -17,15 +17,10 @@ export class TweetQueue extends Component {
 
     async componentDidMount() {
         const baseUrl = "https://mstwitterbot.azurewebsites.net/";
-        let authToken = await getTokenSilent(this.props.msalConfig);
-        let headers = {
-            headers: {
-                "Content-type": "application/json",
-                "Authorization": "Bearer " + authToken
-            }
-        }
+        let authHeaders = await getAuthHeadersSilent(this.props.msalConfig);
+        
         let utcRes = await axios.get(baseUrl + "api/get-utc-now");
-        let tweetRes = await axios.get(baseUrl + "api/get-handles-tweet-queue", headers);
+        let tweetRes = await axios.get(baseUrl + "api/get-handles-tweet-queue", authHeaders);
         let utcServerTimestamp = utcRes.data;
         let tweetQueue = tweetRes.data;
 
@@ -39,6 +34,32 @@ export class TweetQueue extends Component {
             isLoadingQueue: false,
             tweetQueue: tweetQueue
         });
+    }
+
+    async deleteTweetByIndex(idx, id) {
+        let tweetQueueCopy = Object.assign([], this.state.tweetQueue);
+        tweetQueueCopy.splice(idx, 1);
+        this.setState({
+            tweetQueue: tweetQueueCopy
+        });
+
+        const baseUrl = "https://mstwitterbot.azurewebsites.net/";
+        let authHeaders = await getAuthHeadersSilent(this.props.msalConfig);
+        await axios.delete(baseUrl + "api/delete-tweet?id=" + id, authHeaders);
+    }
+
+    async approveOrCancelAndRemove(idx, type, id) {
+        let tweetQueueCopy = Object.assign([], this.state.tweetQueue);
+        type == 'approve' ? tweetQueueCopy[idx].IsApprovedByHandle = true : tweetQueueCopy[idx].IsApprovedByHandle = false;
+        this.setState({
+            tweetQueue: tweetQueueCopy
+        });
+
+        const baseUrl = "https://mstwitterbot.azurewebsites.net/";
+        let authHeaders = await getAuthHeadersSilent(this.props.msalConfig);
+        type == 'approve' ?
+            await axios.get(baseUrl + "api/approve-or-cancel?approveById=" + id + "&cancelById=0", authHeaders) :
+            await axios.get(baseUrl + "api/approve-or-cancel?cancelById=" + id + "&approveById=0", authHeaders);
     }
 
     render() {
@@ -64,7 +85,13 @@ export class TweetQueue extends Component {
                     
                     <div className="list-group scroll-group" style={{maxHeight: (this.props.viewportHeight - 400) + "px"}}>
                         {
-                            this.state.tweetQueue.map((tweet, index) => <BasicTweetBlock tweet={tweet} key={index} />)
+                            this.state.tweetQueue.map((tweet, index) => <BasicTweetBlock
+                                tweet={tweet}
+                                idx={index}
+                                canEdit={true}
+                                deleteTweetByIndex={(idx, id) => this.deleteTweetByIndex(idx, id)}
+                                approveOrCancelAndRemove={(idx, type, id) => this.approveOrCancelAndRemove(idx, type, id)}
+                            />)
                         }
                     </div>
                 </div>

@@ -18,10 +18,31 @@ export async function login(msalUserAgentApp) {
     return msalUserAgentApp.getAccount();
 }
 
-export async function getTokenSilent(msalUserAgentApp) {
+export async function initialCachedAuthCheck(msalUserAgentApp) {
     let requestParams = {
         scopes: [clientIdString]
     };
     let token = await msalUserAgentApp.acquireTokenSilent(requestParams);
-    return token.accessToken;
+    console.log(token);
+    return token;
+}
+
+export async function getAuthHeadersSilent(msalUserAgentApp) {
+    let requestParams = {
+        scopes: [clientIdString]
+    };
+    let token = await msalUserAgentApp.acquireTokenSilent(requestParams);
+    let headers = {
+        headers: {
+            "Content-type": "application/json",
+            "Cache-Control": "no-store, no-cache, must-revalidate",
+            "Pragma": "no-cache",
+            "Authorization": "Bearer " + token.accessToken
+        }
+    }
+    if (token == null) {
+        window.location.reload(true);
+    } else {
+        return headers;
+    }
 }

@@ -9,9 +9,15 @@ export class TweetImageBlock extends Component {
         }
     }
 
+    openImageNewTab(base64String) {
+        let newtab = window.open();
+        newtab.document.body.innerHTML = "<img src='" + base64String + "'/>";
+        newtab.document.title = "Image preview";
+    }
+
     render() {
         return (
-            <li className="list-group-item w-25 mr-2 thumbnail-item">
+            <li className="list-group-item w-25 mr-2 thumbnail-item" onClick={() => this.openImageNewTab(this.props.base64)}>
                 {
                     this.props.editPaneExpanded &&
                     <i className="fas fa-trash-alt trash-hover float-right mb-2"></i>

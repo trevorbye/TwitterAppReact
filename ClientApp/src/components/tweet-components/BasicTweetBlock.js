@@ -1,5 +1,7 @@
-﻿import React, { Component } from 'react';
+﻿import React, { Component} from 'react';
 import { TweetImageBlock } from './TweetImageBlock';
+import { TweetApproveCancelBlock } from './TweetApproveCancelBlock';
+import { WebjobPostedBlock } from './WebjobPostedBlock';
 import axios from 'axios';
 
 export class BasicTweetBlock extends Component {
@@ -9,6 +11,20 @@ export class BasicTweetBlock extends Component {
         this.state = {
             editPaneExpanded: false
         }
+    }
+
+    expandEditPane() {
+        this.setState({
+            editPaneExpanded: true
+        });
+    }
+
+    deleteTweet() {
+        this.props.deleteTweetByIndex(this.props.idx, this.props.tweet.Id);
+    }
+
+    approveOrCancelTweet(type) {
+        this.props.approveOrCancelAndRemove(this.props.idx, type, this.props.tweet.Id);
     }
 
     render() {
@@ -28,7 +44,7 @@ export class BasicTweetBlock extends Component {
                         {
                             this.props.tweet.ImageBase64Strings.map((base64, index) => <TweetImageBlock
                                 base64={base64}
-                                key={index}
+                                idx={index}
                                 editPaneExpanded={this.state.editPaneExpanded} />)
                         }
                     </ul>
@@ -44,6 +60,20 @@ export class BasicTweetBlock extends Component {
                         <small className="my-auto">{this.props.tweet.TweetUser}</small>
                     </span>
                 </div>
+
+                <TweetApproveCancelBlock
+                    tweet={this.props.tweet}
+                    canEdit={this.props.canEdit}
+                    expandEditPane={() => this.expandEditPane()}
+                    deleteTweet={() => this.deleteTweet()}
+                    approveOrCancelTweet={(type) => this.approveOrCancelTweet(type)}
+                    editPaneExpanded={this.state.editPaneExpanded}
+                />
+
+                <WebjobPostedBlock tweet={this.props.tweet}
+                    editPaneExpanded={this.state.editPaneExpanded}
+                    deleteTweet={() => this.deleteTweet()}
+                />
                 
             </div>
         );

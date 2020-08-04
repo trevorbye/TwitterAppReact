@@ -109,6 +109,6 @@
     color: #dbdbdb;
 }
 
-.fa-user, .fa-clock {
+.fa-user, .fa-clock, .fa-check, .fa-times-circle {
     vertical-align: middle;
 }

@@ -8,7 +8,7 @@ import { Home } from './components/Home';
 import { TweetQueue } from './components/TweetQueue';
 import Footer from './components/Footer';
 
-import { msalApp, getTokenSilent } from './components/auth-utils/auth-config'
+import { msalApp, initialCachedAuthCheck } from './components/auth-utils/auth-config'
 import './custom.css'
 
 export default class App extends Component {
@@ -25,7 +25,7 @@ export default class App extends Component {
     }
 
     async componentDidMount() {
-        let cachedAuthToken = await getTokenSilent(this.state.msalConfig);
+        let cachedAuthToken = await initialCachedAuthCheck(this.state.msalConfig);
         this.setState({
             hasCheckedCachedAuth: true,
             isAuthenticated: (cachedAuthToken == null) ? false : true,
