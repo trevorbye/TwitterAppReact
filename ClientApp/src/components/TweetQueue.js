@@ -11,7 +11,8 @@ export class TweetQueue extends Component {
 
         this.state = {
             isLoadingQueue: true,
-            tweetQueue: []
+            tweetQueue: [],
+            imageDeleteInProg: false
         }
     }
 
@@ -46,6 +47,29 @@ export class TweetQueue extends Component {
         const baseUrl = "https://mstwitterbot.azurewebsites.net/";
         let authHeaders = await getAuthHeadersSilent(this.props.msalConfig);
         await axios.delete(baseUrl + "api/delete-tweet?id=" + id, authHeaders);
+    }
+
+    async deleteImageByIndex(imageIdx, tweetIdx) {
+        if (this.state.imageDeleteInProg) {
+            return;
+        }
+        this.setState({
+            imageDeleteInProg: true
+        });
+
+        let tweetQueueCopy = Object.assign([], this.state.tweetQueue);
+        tweetQueueCopy[tweetIdx].ImageBase64Strings.splice(imageIdx, 1);
+        this.setState({
+            tweetQueue: tweetQueueCopy,
+        });
+
+        const baseUrl = "https://mstwitterbot.azurewebsites.net/";
+        let authHeaders = await getAuthHeadersSilent(this.props.msalConfig);
+        await axios.delete(baseUrl + "api/delete-tweet-image?tweetId=" + tweetQueueCopy[tweetIdx].Id + "&imageIdx=" + imageIdx, authHeaders);
+
+        this.setState({
+            imageDeleteInProg: false
+        });
     }
 
     async approveOrCancelAndRemove(idx, type, id) {
@@ -91,6 +115,7 @@ export class TweetQueue extends Component {
                                 canEdit={true}
                                 deleteTweetByIndex={(idx, id) => this.deleteTweetByIndex(idx, id)}
                                 approveOrCancelAndRemove={(idx, type, id) => this.approveOrCancelAndRemove(idx, type, id)}
+                                deleteImageByIndex={(imageIdx, tweetIdx) => this.deleteImageByIndex(imageIdx, tweetIdx)}
                             />)
                         }
                     </div>

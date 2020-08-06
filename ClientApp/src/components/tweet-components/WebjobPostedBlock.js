@@ -12,7 +12,7 @@ export class WebjobPostedBlock extends Component {
     render() {
         if (this.props.tweet.IsPostedByWebJob && !this.props.editPaneExpanded) {
             return (
-                <div className="d-flex w-100 justify-content-between mt-2">
+                <div className="d-flex w-100 justify-content-between mt-2" data-testid="webjob-pane">
                     <span>
                         {
                             this.props.tweet.RetweetNum == 0 ?

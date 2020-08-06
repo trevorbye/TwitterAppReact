@@ -2,6 +2,7 @@
 import { TweetImageBlock } from './TweetImageBlock';
 import { TweetApproveCancelBlock } from './TweetApproveCancelBlock';
 import { WebjobPostedBlock } from './WebjobPostedBlock';
+import { EditPaneBlock } from './EditPaneBlock';
 import axios from 'axios';
 
 export class BasicTweetBlock extends Component {
@@ -19,8 +20,18 @@ export class BasicTweetBlock extends Component {
         });
     }
 
+    collapseEditPane() {
+        this.setState({
+            editPaneExpanded: false
+        });
+    }
+
     deleteTweet() {
         this.props.deleteTweetByIndex(this.props.idx, this.props.tweet.Id);
+    }
+
+    deleteImage(idx) {
+        this.props.deleteImageByIndex(idx, this.props.idx);
     }
 
     approveOrCancelTweet(type) {
@@ -45,7 +56,9 @@ export class BasicTweetBlock extends Component {
                             this.props.tweet.ImageBase64Strings.map((base64, index) => <TweetImageBlock
                                 base64={base64}
                                 idx={index}
-                                editPaneExpanded={this.state.editPaneExpanded} />)
+                                editPaneExpanded={this.state.editPaneExpanded}
+                                deleteImage={(idx) => this.deleteImage(idx)}
+                            />)
                         }
                     </ul>
                 }
@@ -68,6 +81,11 @@ export class BasicTweetBlock extends Component {
                     deleteTweet={() => this.deleteTweet()}
                     approveOrCancelTweet={(type) => this.approveOrCancelTweet(type)}
                     editPaneExpanded={this.state.editPaneExpanded}
+                />
+
+                <EditPaneBlock editPaneExpanded={this.state.editPaneExpanded}
+                    collapseEditPane={() => this.collapseEditPane()}
+                    tweet={this.props.tweet}
                 />
 
                 <WebjobPostedBlock tweet={this.props.tweet}
