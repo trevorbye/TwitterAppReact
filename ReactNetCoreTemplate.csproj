@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="ClientApp\src\components\__tests__\" />
     <Folder Include="Controllers\" />
   </ItemGroup>
 

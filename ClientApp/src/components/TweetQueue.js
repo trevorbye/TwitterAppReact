@@ -1,5 +1,6 @@
 ﻿import React, { Component } from 'react';
 import { BasicTweetBlock } from './tweet-components/BasicTweetBlock';
+import { Compose } from './Compose.js';
 
 import axios from 'axios';
 import { getAuthHeadersSilent } from './auth-utils/auth-config';
@@ -21,7 +22,9 @@ export class TweetQueue extends Component {
         let authHeaders = await getAuthHeadersSilent(this.props.msalConfig);
         
         let utcRes = await axios.get(baseUrl + "api/get-utc-now");
-        let tweetRes = await axios.get(baseUrl + "api/get-handles-tweet-queue", authHeaders);
+
+        let queueUrl = this.props.compose ? "user" : "handles";
+        let tweetRes = await axios.get(baseUrl + `api/get-${queueUrl}-tweet-queue`, authHeaders);
         let utcServerTimestamp = utcRes.data;
         let tweetQueue = tweetRes.data;
 
@@ -29,7 +32,6 @@ export class TweetQueue extends Component {
             tweet.CreatedTime = getHumanReadableTime(utcServerTimestamp, tweet.CreatedTime);
             tweet.ScheduledStatusTime = localeStatusTime(tweet.ScheduledStatusTime);
         });
-        console.log(tweetQueue);
 
         this.setState({
             isLoadingQueue: false,
@@ -98,42 +100,76 @@ export class TweetQueue extends Component {
             await axios.get(baseUrl + `api/approve-or-cancel?cancelById=${id}&approveById=0`, authHeaders);
     }
 
-    render() {
+    loadingQueueDiv() {
         return (
-            <div className="row">
-                <div className="col-md-12 mb-3">
-                    <h2 className="mb-3">Your Tweet queue</h2>
-                    <p className="mb-3">
-                        These are all current Tweets that users have requested to post to any of your configured Twitter accounts.
-                        Approve the request to post the Tweet at the scheduled time. You can edit the content of a tweet, and cancel your approval
-                        up until the scheduled post time. <i className="fab fa-twitter-square fa-lg twitter"></i> means
-                        the Tweet has been posted as a status, and <i className="fas fa-retweet fa-lg twitter"></i> means it has been re-tweeted.
-                    </p>
-
-                    {
-                        this.state.isLoadingQueue &&
-
-                        <div className="d-flex p-3 align-items-center border border-common rounded">
-                            <strong>Loading tweet queue...</strong>
-                            <div className="spinner-border text-success ml-auto" role="status" aria-hidden="true"></div>
-                        </div>
-                    }
-                    
-                    <div className="list-group scroll-group" style={{maxHeight: (this.props.viewportHeight - 400) + "px"}}>
-                        {
-                            this.state.tweetQueue.map((tweet, index) => <BasicTweetBlock
-                                tweet={tweet}
-                                idx={index}
-                                canEdit={true}
-                                deleteTweetByIndex={(idx, id) => this.deleteTweetByIndex(idx, id)}
-                                approveOrCancelAndRemove={(idx, type, id) => this.approveOrCancelAndRemove(idx, type, id)}
-                                deleteImageByIndex={(imageIdx, tweetIdx) => this.deleteImageByIndex(imageIdx, tweetIdx)}
-                                editTweet={(tweetId, editState, idx) => this.editTweet(tweetId, editState, idx)}
-                            />)
-                        }
-                    </div>
-                </div>
+            <div className="d-flex p-3 align-items-center border border-common rounded">
+                <strong>Loading tweet queue...</strong>
+                <div className="spinner-border text-success ml-auto" role="status" aria-hidden="true"></div>
             </div>
         );
+    }
+
+    render() {
+        if (this.props.compose) {
+            return (
+                <div className="row">
+
+                    <Compose />
+
+                    <div className="col-md-6 mb-3">
+                        <h2 className="mb-3">Requested tweets</h2>
+                        <p className="mb-3">
+                            View your active requested Tweets. The icons indicate whether or not the handle owner has approved your request.
+                            You can <b>Delete</b> both approved and unapproved Tweets. The <i className="fab fa-twitter-square fa-lg twitter"></i> indicates
+                            that the Tweet has been posted and is safe to delete from your queue.
+                    </p>
+                        {this.state.isLoadingQueue && this.loadingQueueDiv()}
+
+                        <div className="list-group scroll-group" style={{ maxHeight: (this.props.viewportHeight - 400) + "px" }}>
+                            {
+                                this.state.tweetQueue.map((tweet, index) => <BasicTweetBlock
+                                    tweet={tweet}
+                                    idx={index}
+                                    canEdit={false}
+                                    deleteTweetByIndex={(idx, id) => this.deleteTweetByIndex(idx, id)}
+                                    approveOrCancelAndRemove={(idx, type, id) => this.approveOrCancelAndRemove(idx, type, id)}
+                                    deleteImageByIndex={(imageIdx, tweetIdx) => this.deleteImageByIndex(imageIdx, tweetIdx)}
+                                    editTweet={(tweetId, editState, idx) => this.editTweet(tweetId, editState, idx)}
+                                />)
+                            }
+                        </div>
+                    </div>
+                </div>
+            );
+        } else {
+            return (
+                <div className="row">
+                    <div className="col-md-12 mb-3">
+                        <h2 className="mb-3">Your Tweet queue</h2>
+                        <p className="mb-3">
+                            These are all current Tweets that users have requested to post to any of your configured Twitter accounts.
+                            Approve the request to post the Tweet at the scheduled time. You can edit the content of a tweet, and cancel your approval
+                            up until the scheduled post time. <i className="fab fa-twitter-square fa-lg twitter"></i> means
+                            the Tweet has been posted as a status, and <i className="fas fa-retweet fa-lg twitter"></i> means it has been re-tweeted.
+                        </p>
+                        {this.state.isLoadingQueue && this.loadingQueueDiv()}
+                            
+                        <div className="list-group scroll-group" style={{ maxHeight: (this.props.viewportHeight - 400) + "px" }}>
+                            {
+                                this.state.tweetQueue.map((tweet, index) => <BasicTweetBlock
+                                    tweet={tweet}
+                                    idx={index}
+                                    canEdit={true}
+                                    deleteTweetByIndex={(idx, id) => this.deleteTweetByIndex(idx, id)}
+                                    approveOrCancelAndRemove={(idx, type, id) => this.approveOrCancelAndRemove(idx, type, id)}
+                                    deleteImageByIndex={(imageIdx, tweetIdx) => this.deleteImageByIndex(imageIdx, tweetIdx)}
+                                    editTweet={(tweetId, editState, idx) => this.editTweet(tweetId, editState, idx)}
+                                />)
+                            }
+                        </div>
+                    </div>
+                </div>
+            );
+        }
     }
 }

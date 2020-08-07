@@ -18,12 +18,22 @@ export async function login(msalUserAgentApp) {
     return msalUserAgentApp.getAccount();
 }
 
+export function logout(msalUserAgentApp) {
+    msalUserAgentApp.logout();
+    return null;
+}
+
 export async function initialCachedAuthCheck(msalUserAgentApp) {
     let requestParams = {
         scopes: [clientIdString]
     };
-    let token = await msalUserAgentApp.acquireTokenSilent(requestParams);
-    console.log(token);
+
+    let token;
+    try {
+        token = await msalUserAgentApp.acquireTokenSilent(requestParams);
+    } catch (e) {
+        return null;
+    }
     return token;
 }
 

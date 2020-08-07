@@ -50,7 +50,7 @@ export class NavMenu extends Component {
                             <span className="navbar-text app-user">{this.props.user}</span>
                         </li>
                         <li className="nav-item">
-                            <a href="" className="nav-link">Log out</a>
+                            <a href="" className="nav-link" onClick={() => this.props.logout()}>Log out</a>
                         </li>
                     </ul>
                 </div>

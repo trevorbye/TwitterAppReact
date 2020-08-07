@@ -1,9 +1,9 @@
-﻿import React, { Component} from 'react';
+﻿import React, { Component, Fragment } from 'react';
 import { TweetImageBlock } from './TweetImageBlock';
 import { TweetApproveCancelBlock } from './TweetApproveCancelBlock';
 import { WebjobPostedBlock } from './WebjobPostedBlock';
 import { EditPaneBlock } from './EditPaneBlock';
-import axios from 'axios';
+import { TimeAndApprovalBlock } from './TimeAndApprovalBlock'
 
 export class BasicTweetBlock extends Component {
     constructor(props) {
@@ -69,27 +69,37 @@ export class BasicTweetBlock extends Component {
                         }
                     </ul>
                 }
-                
-                <div className="d-flex w-100 justify-content-between mt-2 mb-3">
-                    <span>
-                        <i className="far fa-clock fa-sm"></i>
-                        <small className="my-auto ml-1">{this.props.tweet.ScheduledStatusTime}</small>
-                    </span>
-                    <span>
-                        <i className="fas fa-user fa-sm mr-1"></i>
-                        <small className="my-auto">{this.props.tweet.TweetUser}</small>
-                    </span>
-                </div>
 
-                <TweetApproveCancelBlock
-                    tweet={this.props.tweet}
-                    canEdit={this.props.canEdit}
-                    expandEditPane={() => this.expandEditPane()}
-                    deleteTweet={() => this.deleteTweet()}
-                    approveOrCancelTweet={(type) => this.approveOrCancelTweet(type)}
-                    editPaneExpanded={this.state.editPaneExpanded}
-                />
+                {
+                    this.props.canEdit &&
+                    <Fragment>
+                        <div className="d-flex w-100 justify-content-between mt-2 mb-3" data-test-id="edit-variant">
+                            <span>
+                                <i className="far fa-clock fa-sm"></i>
+                                <small className="my-auto ml-1">{this.props.tweet.ScheduledStatusTime}</small>
+                            </span>
+                            <span>
+                                <i className="fas fa-user fa-sm mr-1"></i>
+                                <small className="my-auto">{this.props.tweet.TweetUser}</small>
+                            </span>
+                        </div>
 
+                        <TweetApproveCancelBlock
+                            tweet={this.props.tweet}
+                            canEdit={this.props.canEdit}
+                            expandEditPane={() => this.expandEditPane()}
+                            deleteTweet={() => this.deleteTweet()}
+                            approveOrCancelTweet={(type) => this.approveOrCancelTweet(type)}
+                            editPaneExpanded={this.state.editPaneExpanded}
+                        />
+                    </Fragment>
+                }
+
+                {
+                    !this.props.canEdit &&
+                    <TimeAndApprovalBlock tweet={this.props.tweet} deleteTweet={() => this.deleteTweet()} />
+                }
+ 
                 <EditPaneBlock editPaneExpanded={this.state.editPaneExpanded}
                     collapseEditPane={() => this.collapseEditPane()}
                     tweet={this.props.tweet}
@@ -99,8 +109,8 @@ export class BasicTweetBlock extends Component {
                 <WebjobPostedBlock tweet={this.props.tweet}
                     editPaneExpanded={this.state.editPaneExpanded}
                     deleteTweet={() => this.deleteTweet()}
+                    canEdit={this.props.canEdit}
                 />
-                
             </div>
         );
     }

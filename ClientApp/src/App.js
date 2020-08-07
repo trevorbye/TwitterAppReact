@@ -8,7 +8,7 @@ import { Home } from './components/Home';
 import { TweetQueue } from './components/TweetQueue';
 import Footer from './components/Footer';
 
-import { msalApp, initialCachedAuthCheck } from './components/auth-utils/auth-config'
+import { msalApp, initialCachedAuthCheck, logout } from './components/auth-utils/auth-config'
 import './custom.css'
 
 export default class App extends Component {
@@ -29,7 +29,7 @@ export default class App extends Component {
         this.setState({
             hasCheckedCachedAuth: true,
             isAuthenticated: (cachedAuthToken == null) ? false : true,
-            user: this.state.msalConfig.getAccount().name
+            user: (cachedAuthToken != null) ? this.state.msalConfig.getAccount().name : null
         })
     }
 
@@ -38,6 +38,10 @@ export default class App extends Component {
             isAuthenticated: true,
             user: user
         });
+    }
+
+    logoutHandler() {
+        logout(this.state.msalConfig);
     }
 
     render() {
@@ -50,13 +54,22 @@ export default class App extends Component {
         else {
             return (
                 <div>
-                    <NavMenu user={this.state.user} />
+                    <NavMenu user={this.state.user} logout={() => this.logoutHandler()}/>
                     <Container className="main-container">
                         <Switch>
                             <Route exact path='/' component={Home} />
                             <Route path='/tweet-queue' render={() => <TweetQueue
                                 msalConfig={this.state.msalConfig}
                                 viewportHeight={this.state.viewportHeight}
+                                compose={false}
+                                key={"queue"}
+                                />}
+                            />
+                            <Route path='/tweet-portal' render={() => <TweetQueue
+                                msalConfig={this.state.msalConfig}
+                                viewportHeight={this.state.viewportHeight}
+                                compose={true}
+                                key={"compose"}
                                 />}
                             />
                         </Switch>

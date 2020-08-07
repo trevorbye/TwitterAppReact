@@ -20,21 +20,21 @@ afterEach(() => {
 it("Webjob section doesn't render during editing, and renders correctly when posted by webjob.", () => {
     act(() => {
         let tweet = { IsPostedByWebJob: true };
-        render(<WebjobPostedBlock tweet={tweet} editPaneExpanded={false} />, container);
+        render(<WebjobPostedBlock tweet={tweet} editPaneExpanded={false} canEdit={true} />, container);
     });
 
     expect(container.querySelector("[data-testid='webjob-pane']")).toBeDefined();
 
     act(() => {
         let tweet = { IsPostedByWebJob: true };
-        render(<WebjobPostedBlock tweet={tweet} editPaneExpanded={true} />, container);
+        render(<WebjobPostedBlock tweet={tweet} editPaneExpanded={true} canEdit={true} />, container);
     });
 
     expect(container.querySelector("[data-testid='webjob-pane']")).toBeNull();
 
     act(() => {
         let tweet = { IsPostedByWebJob: false };
-        render(<WebjobPostedBlock tweet={tweet} editPaneExpanded={true} />, container);
+        render(<WebjobPostedBlock tweet={tweet} editPaneExpanded={true} canEdit={true} />, container);
     });
 
     expect(container.querySelector("[data-testid='webjob-pane']")).toBeNull();

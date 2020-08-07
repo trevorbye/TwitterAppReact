@@ -11,7 +11,7 @@ describe("Basic tweet block tests.", () => {
             ScheduledStatusTime: "12:00",
             TweetUser: "email@test.com"
         };
-        const wrapper = shallow(<BasicTweetBlock tweet={tweet} />);
+        const wrapper = shallow(<BasicTweetBlock tweet={tweet} canEdit={true} />);
         expect(wrapper.text()).toContain("a test twitter status");
         expect(wrapper.text()).toContain("@TestHandle");
         expect(wrapper.text()).toContain("12:00");
@@ -81,6 +81,51 @@ describe("Basic tweet block tests.", () => {
         editBtn.simulate("click");
 
         expect(input.props().value).toEqual("a test twitter status");
+    });
+
+    it("Compose-type tweet block shows modified view.", () => {
+        let tweet = {
+            StatusBody: "a test twitter status",
+            TwitterHandle: "@TestHandle",
+            ScheduledStatusTime: "12:00",
+            TweetUser: "email@test.com",
+            IsPostedByWebJob: false,
+            IsApprovedByHandle: false,
+            RetweetNum: 0
+        };
+        const wrapper = mount(<BasicTweetBlock tweet={tweet} canEdit={false} />);
+        expect(wrapper.find("[data-testid='edit-variant']").exists()).toBeFalsy();
+        expect(wrapper.find("[data-testid='compose-variant']").exists()).toBeTruthy();
+    });
+
+    it("Compose-type tweet block shows approved icon for approved tweet.", () => {
+        let tweet = {
+            StatusBody: "a test twitter status",
+            TwitterHandle: "@TestHandle",
+            ScheduledStatusTime: "12:00",
+            TweetUser: "email@test.com",
+            IsPostedByWebJob: false,
+            IsApprovedByHandle: true,
+            RetweetNum: 0
+        };
+        const wrapper = mount(<BasicTweetBlock tweet={tweet} canEdit={false} />);
+        expect(wrapper.find("[data-testid='approved']").exists()).toBeTruthy();
+        expect(wrapper.find("[data-testid='not-approved']").exists()).toBeFalsy();
+    });
+
+    it("Compose-type tweet block shows not-approved icon for unapproved tweet.", () => {
+        let tweet = {
+            StatusBody: "a test twitter status",
+            TwitterHandle: "@TestHandle",
+            ScheduledStatusTime: "12:00",
+            TweetUser: "email@test.com",
+            IsPostedByWebJob: false,
+            IsApprovedByHandle: false,
+            RetweetNum: 0
+        };
+        const wrapper = mount(<BasicTweetBlock tweet={tweet} canEdit={false} />);
+        expect(wrapper.find("[data-testid='not-approved']").exists()).toBeTruthy();
+        expect(wrapper.find("[data-testid='approved']").exists()).toBeFalsy();
     });
 
 });
