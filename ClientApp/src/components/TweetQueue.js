@@ -114,7 +114,7 @@ export class TweetQueue extends Component {
             return (
                 <div className="row">
 
-                    <Compose />
+                    <Compose msalConfig={this.props.msalConfig}/>
 
                     <div className="col-md-6 mb-3">
                         <h2 className="mb-3">Requested tweets</h2>
