@@ -26,7 +26,6 @@ export class EditPaneBlock extends Component {
 
     handleBodyChange(event) {
         let result = validateTweetBody(event.target.value);
-        console.log(result);
         this.setState({
             temporaryEditState: {
                 body: event.target.value,
@@ -40,7 +39,7 @@ export class EditPaneBlock extends Component {
         if (this.props.editPaneExpanded) {
             return (
                 <SlideDown className={"edit-pane-slidedown"}>
-                    <div>
+                    <div data-testid="edit-pane">
                         <div className="input-group mb-3">
                             <div className="input-group-prepend">
                                 <span className="input-group-text">
@@ -57,20 +56,20 @@ export class EditPaneBlock extends Component {
                         </div>
 
                         <div className="input-group mb-3">
-                            <span className="badge">{this.state.temporaryEditState.bodyLenText}</span>
+                            <span className="badge" data-testid="twttr-chars">{this.state.temporaryEditState.bodyLenText}</span>
                         </div>
 
                         <div className="d-flex w-100 justify-content-between">
                             <span>
                                 {
-                                    this.state.temporaryEditState.isValidBody ?
-                                        <button type="button" className="btn btn-primary btn-sm">Save</button> :
+                                    this.state.temporaryEditState.isValidBody && this.state.temporaryEditState.body != this.props.tweet.StatusBody ?
+                                        <button type="button" className="btn btn-primary btn-sm" onClick={() => this.props.editTweet(this.state.temporaryEditState)}>Save</button> :
                                         <button type="button" className="btn btn-primary btn-sm" disabled>Save</button>
                                 }
                                 
                             </span>
                             <span>
-                                <i className="fas fa-compress fa-lg" onClick={() => this.collapseEditPane()}></i>
+                                <i className="fas fa-compress fa-lg" data-testid="collapse-edit-btn" onClick={() => this.collapseEditPane()}></i>
                             </span>
                         </div>
                     </div>

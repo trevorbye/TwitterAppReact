@@ -38,6 +38,13 @@ export class BasicTweetBlock extends Component {
         this.props.approveOrCancelAndRemove(this.props.idx, type, this.props.tweet.Id);
     }
 
+    editTweet(editState) {
+        this.setState({
+            editPaneExpanded: false
+        });
+        this.props.editTweet(this.props.tweet.Id, editState, this.props.idx);
+    }
+
     render() {
         return (
             <div className="list-group-item list-group-item-action flex-column align-items-start">
@@ -86,6 +93,7 @@ export class BasicTweetBlock extends Component {
                 <EditPaneBlock editPaneExpanded={this.state.editPaneExpanded}
                     collapseEditPane={() => this.collapseEditPane()}
                     tweet={this.props.tweet}
+                    editTweet={(editState) => this.editTweet(editState)}
                 />
 
                 <WebjobPostedBlock tweet={this.props.tweet}

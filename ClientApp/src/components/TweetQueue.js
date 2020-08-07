@@ -46,7 +46,7 @@ export class TweetQueue extends Component {
 
         const baseUrl = "https://mstwitterbot.azurewebsites.net/";
         let authHeaders = await getAuthHeadersSilent(this.props.msalConfig);
-        await axios.delete(baseUrl + "api/delete-tweet?id=" + id, authHeaders);
+        await axios.delete(baseUrl + `api/delete-tweet?id=${id}`, authHeaders);
     }
 
     async deleteImageByIndex(imageIdx, tweetIdx) {
@@ -65,11 +65,23 @@ export class TweetQueue extends Component {
 
         const baseUrl = "https://mstwitterbot.azurewebsites.net/";
         let authHeaders = await getAuthHeadersSilent(this.props.msalConfig);
-        await axios.delete(baseUrl + "api/delete-tweet-image?tweetId=" + tweetQueueCopy[tweetIdx].Id + "&imageIdx=" + imageIdx, authHeaders);
+        await axios.delete(baseUrl + `api/delete-tweet-image?tweetId=${tweetQueueCopy[tweetIdx].Id}&imageIdx=${imageIdx}`, authHeaders);
 
         this.setState({
             imageDeleteInProg: false
         });
+    }
+
+    async editTweet(tweetId, editState, idx) {
+        let tweetQueueCopy = Object.assign([], this.state.tweetQueue);
+        tweetQueueCopy[idx].StatusBody = editState.body;
+        this.setState({
+            tweetQueue: tweetQueueCopy
+        });
+
+        const baseUrl = "https://mstwitterbot.azurewebsites.net/";
+        let authHeaders = await getAuthHeadersSilent(this.props.msalConfig);
+        await axios.post(baseUrl + "api/edit-tweet-attributes", { Id: tweetId, StatusBody: editState.body }, authHeaders);
     }
 
     async approveOrCancelAndRemove(idx, type, id) {
@@ -82,8 +94,8 @@ export class TweetQueue extends Component {
         const baseUrl = "https://mstwitterbot.azurewebsites.net/";
         let authHeaders = await getAuthHeadersSilent(this.props.msalConfig);
         type == 'approve' ?
-            await axios.get(baseUrl + "api/approve-or-cancel?approveById=" + id + "&cancelById=0", authHeaders) :
-            await axios.get(baseUrl + "api/approve-or-cancel?cancelById=" + id + "&approveById=0", authHeaders);
+            await axios.get(baseUrl + `api/approve-or-cancel?approveById=${id}&cancelById=0`, authHeaders) :
+            await axios.get(baseUrl + `api/approve-or-cancel?cancelById=${id}&approveById=0`, authHeaders);
     }
 
     render() {
@@ -116,6 +128,7 @@ export class TweetQueue extends Component {
                                 deleteTweetByIndex={(idx, id) => this.deleteTweetByIndex(idx, id)}
                                 approveOrCancelAndRemove={(idx, type, id) => this.approveOrCancelAndRemove(idx, type, id)}
                                 deleteImageByIndex={(imageIdx, tweetIdx) => this.deleteImageByIndex(imageIdx, tweetIdx)}
+                                editTweet={(tweetId, editState, idx) => this.editTweet(tweetId, editState, idx)}
                             />)
                         }
                     </div>

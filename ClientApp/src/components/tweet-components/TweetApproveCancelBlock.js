@@ -24,7 +24,7 @@ export class TweetApproveCancelBlock extends Component {
                     !this.props.tweet.IsPostedByWebJob &&
                     this.props.tweet.RetweetNum == 0 &&
                     this.props.canEdit &&
-                    <button type="button" className="btn btn-primary btn-sm" onClick={() => this.props.expandEditPane()}>Edit</button>
+                    <button type="button" className="btn btn-primary btn-sm" data-testid="edit-btn" onClick={() => this.props.expandEditPane()}>Edit</button>
                 }
                 <i className="fas fa-trash-alt ml-1 trash-hover" onClick={() => this.props.deleteTweet()}></i>
             </span>
@@ -35,7 +35,7 @@ export class TweetApproveCancelBlock extends Component {
         if (!this.props.editPaneExpanded && !this.props.tweet.IsPostedByWebJob) {
             if (this.props.tweet.IsApprovedByHandle) {
                 return (
-                    <div className="d-flex w-100 justify-content-between mt-3">
+                    <div className="d-flex w-100 justify-content-between mt-3" data-testid="approve-block">
                         <span>
                             <button type="button" className="btn btn-primary btn-sm mr-1" onClick={() => this.props.approveOrCancelTweet('cancel')}>Cancel</button>
                             <i className="fas fa-check fa-lg"></i>
@@ -45,7 +45,7 @@ export class TweetApproveCancelBlock extends Component {
                 );
             } else {
                 return (
-                    <div className="d-flex w-100 justify-content-between mt-3">
+                    <div className="d-flex w-100 justify-content-between mt-3" data-testid="approve-block">
                         <span>
                             <button type="button" className={this.state.buttonClassName} onClick={() => this.props.approveOrCancelTweet('approve')}>{this.props.tweet.RetweetNum == 0 ? 'Approve' : 'Approve and retweet'}</button>
                             <i className="fas fa-times-circle fa-lg"></i>
