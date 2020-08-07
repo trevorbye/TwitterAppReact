@@ -1,6 +1,8 @@
 ﻿import React, { Component } from 'react';
 import { getAuthHeadersSilent } from './auth-utils/auth-config';
 import { validateTweetBody } from './utils/twitter-text-util.js';
+import { TweetImageBlock } from './tweet-components/TweetImageBlock';
+import { fileToBase64 } from './utils/file-util';
 import axios from 'axios';
 
 export class Compose extends Component {
@@ -16,7 +18,8 @@ export class Compose extends Component {
                 bodyLenText: validateTweetBody("").textReturn
             },
             dateInput: "",
-            timeInput: ""
+            timeInput: "",
+            imageFileList: []
         }
     }
 
@@ -42,7 +45,7 @@ export class Compose extends Component {
         this.setState({
             bodyState: {
                 text: event.target.value,
-                isValid: result.isValid,
+                isValid: result.isValid && event.target.value != "",
                 bodyLenText: result.textReturn
             }
         });
@@ -57,6 +60,26 @@ export class Compose extends Component {
     timeChange(event) {
         this.setState({
             timeInput: event.target.value
+        });
+    }
+
+    async fileChange(event) {
+        let files = event.target.files;
+        let promises = [];
+
+        Array.from(files).forEach(function (file) {
+            promises.push(fileToBase64(file))
+        });
+        
+        let base64Strings = await Promise.all(promises);
+        this.setState({
+            imageFileList: base64Strings
+        });
+    }
+
+    clearImages() {
+        this.setState({
+            imageFileList: []
         });
     }
 
@@ -120,7 +143,48 @@ export class Compose extends Component {
                     />
                 </div>
                 
+                {
+                    this.state.imageFileList.length <= 3 &&
+                    <div className="input-group mb-3" ng-hide="imageFileList.length >= 4">
+                        <div className="custom-file">
+                            <input type="file" className="custom-file-input" id="images-file-input" accept=".png, .PNG, .jpg, .jpeg" 
+                                onChange={(e) => this.fileChange(e)} multiple 
+                            />
+                            <label className="custom-file-label" for="images-file-input">Add images</label>
+                        </div>
+                    </div>
+                }
 
+                {
+                    this.state.imageFileList.length > 0 &&
+                    <div className="mb-3">
+                        <button className="btn btn-warning" onClick={() => this.clearImages()}>Clear images</button>
+                    </div>
+                }
+                
+                <ul className="list-group list-group-horizontal mb-3">
+                    {
+                        this.state.imageFileList.map((base64, index) => <TweetImageBlock
+                            base64={base64}
+                            idx={index}
+                            editPaneExpanded={false}
+                        />)
+                    }
+                </ul>
+
+                {
+                    this.state.bodyState.isValid &&
+                    this.state.selectedHandle != "" &&
+                    this.state.imageFileList.length <= 4 ?
+                    <button type="button" class="btn btn-success mb-3 tweet">
+                        Create Tweet
+                    </button>
+                    :
+                    <button type="button" class="btn btn-success mb-3 tweet" disabled>
+                        Create Tweet
+                    </button>
+                }
+                
             </div>
         );
     }
