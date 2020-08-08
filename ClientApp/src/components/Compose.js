@@ -19,7 +19,9 @@ export class Compose extends Component {
             },
             dateInput: "",
             timeInput: "",
-            imageFileList: []
+            imageFileList: [],
+            errorMessage: undefined,
+            processingTweet: false
         }
     }
 
@@ -27,11 +29,75 @@ export class Compose extends Component {
         const baseUrl = "https://mstwitterbot.azurewebsites.net/";
         let authHeaders = await getAuthHeadersSilent(this.props.msalConfig);
         let handles = await axios.get(baseUrl + "api/get-distinct-handles", authHeaders);
+        handles.data.unshift("");
 
         this.setState({
             globalHandles: handles.data,
             selectedHandle: handles.data[0]
         });
+    }
+
+    async createTweet() {
+        // create dummy loading tweet and add to queue
+        this.setState({processingTweet: true});
+
+        let date;
+        if (this.state.dateInput == "" || this.state.timeInput == "") {
+            date = new Date(Date.now());
+        } else {
+            date = new Date(this.state.dateInput);
+            let time = new Date(this.state.timeInput);
+            date.setHours(time.getHours(), time.getMinutes());
+        }
+
+        let tweetPostObject = {
+            "TwitterHandle": this.state.selectedHandle,
+            "ScheduledStatusTime": date,
+            "StatusBody": this.state.bodyState.text,
+            "ImageBase64Strings": this.state.imageFileList
+        };
+
+        const baseUrl = "https://mstwitterbot.azurewebsites.net/";
+        let authHeaders = await getAuthHeadersSilent(this.props.msalConfig);
+        let response = await axios.post(baseUrl + "api/post-new-tweet", tweetPostObject, authHeaders);
+        if (response.status == 200) {
+            let queueObject = {
+                "Id": response.data.Id,
+                "TwitterUser": response.data.TweetUser,
+                "CreatedTime": "Just now",
+                "ScheduledStatusTime": date.toLocaleString(),
+                "TwitterHandle": this.state.selectedHandle,
+                "StatusBody": this.state.bodyState.text,
+                "IsApprovedByHandle": false,
+                "IsPostedByWebJob": false,
+                "ImageBase64Strings": this.state.imageFileList
+            };
+            this.props.addNewTweet(queueObject);
+            this.setState({
+                selectedHandle: "",
+                bodyState: {
+                    text: "",
+                    isValid: false,
+                    bodyLenText: validateTweetBody("").textReturn
+                },
+                dateInput: "",
+                timeInput: "",
+                imageFileList: [],
+                errorMessage: undefined,
+                processingTweet: false
+            });
+        } else if (response.status == 404) {
+            this.setState({
+                errorMessage: "One of your images exceeds the size limit for requests within this application (22mb). Additionally, individual images must be <=5mb in size.",
+                processingTweet: false
+            
+            });
+        } else {
+            this.setState({
+                errorMessage: response.data,
+                processingTweet: false
+            });
+        }
     }
 
     dropdownChange(event) {
@@ -176,13 +242,35 @@ export class Compose extends Component {
                     this.state.bodyState.isValid &&
                     this.state.selectedHandle != "" &&
                     this.state.imageFileList.length <= 4 ?
-                    <button type="button" class="btn btn-success mb-3 tweet">
-                        Create Tweet
-                    </button>
+                    <div className="mb-3">
+                        <button type="button" className="btn btn-success tweet" onClick={() => this.createTweet()}> 
+                            Create Tweet
+                        </button>
+                        {
+                            this.state.processingTweet &&
+                            <span>
+                                <div className="spinner-border text-success ml-2" id="wait-tweet" role="status" aria-hidden="true"></div>
+                            </span>
+                        }
+                    </div>
                     :
-                    <button type="button" class="btn btn-success mb-3 tweet" disabled>
+                    <button type="button" className="btn btn-success mb-3 tweet" disabled>
                         Create Tweet
                     </button>
+                }
+
+                {
+                    this.state.errorMessage && 
+                    <div className="alert alert-danger" role="alert">
+                        <strong>Oops!</strong> {this.state.errorMessage}
+                    </div>
+                }
+
+                {
+                    this.state.imageFileList.length > 4 && 
+                    <div className="alert alert-danger" role="alert">
+                        <strong>Oops!</strong> You exceeded the maximum of <strong>4</strong> images.
+                    </div>
                 }
                 
             </div>

@@ -39,6 +39,14 @@ export class TweetQueue extends Component {
         });
     }
 
+    addNewTweet(tweetQueue) {
+        let tweetQueueCopy = Object.assign([], this.state.tweetQueue);
+        tweetQueueCopy.unshift(tweetQueue);
+        this.setState({
+            tweetQueue: tweetQueueCopy
+        })
+    }
+
     async deleteTweetByIndex(idx, id) {
         let tweetQueueCopy = Object.assign([], this.state.tweetQueue);
         tweetQueueCopy.splice(idx, 1);
@@ -114,7 +122,7 @@ export class TweetQueue extends Component {
             return (
                 <div className="row">
 
-                    <Compose msalConfig={this.props.msalConfig}/>
+                    <Compose msalConfig={this.props.msalConfig} addNewTweet={(tweet) => this.addNewTweet(tweet)} />
 
                     <div className="col-md-6 mb-3">
                         <h2 className="mb-3">Requested tweets</h2>

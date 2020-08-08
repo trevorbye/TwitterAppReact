@@ -112,3 +112,11 @@
 .fa-user, .fa-clock, .fa-check, .fa-times-circle {
     vertical-align: middle;
 }
+
+#wait-tweet {
+    vertical-align: middle;
+}
+
+.fa-github {
+    color: #1c1c1c;
+}
