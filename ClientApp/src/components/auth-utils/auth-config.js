@@ -1,4 +1,5 @@
-﻿import { UserAgentApplication } from 'msal'
+﻿import React from 'react';
+import { UserAgentApplication } from 'msal'
 
 let clientIdString = "f3031107-74e2-4be0-ae9a-e015c90c42c2";
 let authorityUri = "https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47";
@@ -14,7 +15,11 @@ export const msalApp = new UserAgentApplication({
 });
 
 export async function login(msalUserAgentApp) {
-    await msalUserAgentApp.loginPopup()
+    try {
+        await msalUserAgentApp.loginPopup();
+    } catch (e) {
+        window.location.href = "/";
+    }
     return msalUserAgentApp.getAccount();
 }
 
@@ -51,7 +56,7 @@ export async function getAuthHeadersSilent(msalUserAgentApp) {
         }
     }
     if (token == null) {
-        window.location.reload(true);
+        window.location.href = "/";
     } else {
         return headers;
     }

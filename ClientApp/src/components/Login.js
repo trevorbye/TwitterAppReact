@@ -5,6 +5,10 @@ export class Login extends Component {
     constructor(props) {
         super(props);
     }
+
+    componentDidMount() {
+        window.history.replaceState(null, "Login", "/")
+    }
     
     async loginClickHandler() {
         let user = await login(this.props.msalConfig);

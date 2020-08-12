@@ -7,32 +7,52 @@ export class EditPaneBlock extends Component {
     constructor(props) {
         super(props);
 
+        let rawDate = new Date(this.props.tweet.ScheduledStatusTime);
+        let origDate = rawDate.toLocaleDateString('sv', { timeZoneName: 'short' }).substr(0, 10);
+        let origTime = rawDate.toLocaleTimeString('sv', { timeZoneName: 'short' }).substr(0, 8);
+
         this.state = {
             editError: false,
-            temporaryEditState: {
-                body: this.props.tweet.StatusBody,
-                bodyLenText: validateTweetBody(this.props.tweet.StatusBody).textReturn,
-                isValidBody: true
-            }
+            origDate: origDate,
+            origTime: origTime,
+            body: this.props.tweet.StatusBody,
+            bodyLenText: validateTweetBody(this.props.tweet.StatusBody).textReturn,
+            isValidBody: true,
+            date: origDate,
+            time: origTime
         }
     }
 
     collapseEditPane() {
         this.props.collapseEditPane();
         this.setState({
-            temporaryEditState: { body: this.props.tweet.StatusBody }
+            body: this.props.tweet.StatusBody,
+            bodyLenText: validateTweetBody(this.props.tweet.StatusBody).textReturn,
+            isValidBody: true,
+            date: this.state.origDate,
+            time: this.state.origTime 
         })
     }
 
     handleBodyChange(event) {
         let result = validateTweetBody(event.target.value);
         this.setState({
-            temporaryEditState: {
-                body: event.target.value,
-                bodyLenText: result.textReturn,
-                isValidBody: result.isValid
-            }
+            body: event.target.value,
+            bodyLenText: result.textReturn,
+            isValidBody: result.isValid
         })
+    }
+
+    dateChange(event) {
+        this.setState({
+            date: event.target.value
+        });
+    }
+
+    timeChange(event) {
+        this.setState({
+            time: event.target.value
+        });
     }
 
     render() {
@@ -49,21 +69,37 @@ export class EditPaneBlock extends Component {
                             <textarea className="form-control"
                                 rows="5"
                                 id="body-text"
-                                value={this.state.temporaryEditState.body}
+                                value={this.state.body}
                                 onChange={(e) => this.handleBodyChange(e)}
                             >
                             </textarea>
                         </div>
 
                         <div className="input-group mb-3">
-                            <span className="badge" data-testid="twttr-chars">{this.state.temporaryEditState.bodyLenText}</span>
+                            <span className="badge" data-testid="twttr-chars">{this.state.bodyLenText}</span>
+                        </div>
+
+                        <div className="input-group mb-3">
+                            <div className="input-group-prepend">
+                                <span className="input-group-text">
+                                    Scheduled date & time
+                                </span>
+                            </div>
+                            <input id="tweet-date" type="date" max="3000-12-31" min="1000-01-01" className="form-control" 
+                                value={this.state.date} 
+                                onChange={(e) => this.dateChange(e)} 
+                            />
+                            <input id="tweet-time" type="time" className="form-control" 
+                                value={this.state.time} 
+                                onChange={(e) => this.timeChange(e)} 
+                            />
                         </div>
 
                         <div className="d-flex w-100 justify-content-between">
                             <span>
                                 {
-                                    this.state.temporaryEditState.isValidBody && this.state.temporaryEditState.body != this.props.tweet.StatusBody ?
-                                        <button type="button" className="btn btn-primary btn-sm" onClick={() => this.props.editTweet(this.state.temporaryEditState)}>Save</button> :
+                                    this.state.isValidBody ?
+                                        <button type="button" className="btn btn-primary btn-sm" onClick={() => this.props.editTweet(this.state)}>Save</button> :
                                         <button type="button" className="btn btn-primary btn-sm" disabled>Save</button>
                                 }
                                 
