@@ -109,7 +109,7 @@
     color: #dbdbdb;
 }
 
-.fa-user, .fa-clock, .fa-check, .fa-times-circle {
+.fa-user, .fa-clock, .fa-check, .fa-times-circle, .fa-toggle-on, .fa-toggle-off {
     vertical-align: middle;
 }
 

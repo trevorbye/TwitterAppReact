@@ -33,6 +33,30 @@ export class Account extends Component {
         );
     }
 
+    async disableAutoTweets(handle, idx) {
+        let handlesCopy = Object.assign([], this.state.handles);
+        handlesCopy[idx].IsAutoRetweetEnabled = false;
+        this.setState({
+            handles: handlesCopy
+        });
+
+        const baseUrl = "https://mstwitterbot.azurewebsites.net/";
+        let authHeaders = await getAuthHeadersSilent(this.props.msalConfig);
+        await axios.get(baseUrl + `api/disable-auto-tweets?handle=${handle.TwitterHandle}`, authHeaders);
+    }
+
+    async enableAutoTweets(handle, idx) {
+        let handlesCopy = Object.assign([], this.state.handles);
+        handlesCopy[idx].IsAutoRetweetEnabled = true;
+        this.setState({
+            handles: handlesCopy
+        });
+
+        const baseUrl = "https://mstwitterbot.azurewebsites.net/";
+        let authHeaders = await getAuthHeadersSilent(this.props.msalConfig);
+        await axios.get(baseUrl + `api/enable-auto-tweets?handle=${handle.TwitterHandle}`, authHeaders);
+    }
+
     render() {
         return (
             <div className="row">
@@ -61,7 +85,12 @@ export class Account extends Component {
                     {this.state.isLoadingHandles && this.loadingQueueDiv()}
                     <div className="list-group">
                         {
-                            this.state.handles.map((handle, idx) => <AccountPane handle={handle} idx={idx} />)
+                            this.state.handles.map((handle, idx) => <AccountPane 
+                                handle={handle} 
+                                idx={idx}
+                                disableAutoTweets={(handle, idx) => this.disableAutoTweets(handle, idx)}
+                                enableAutoTweets={(handle, idx) => this.enableAutoTweets(handle, idx)}  
+                                />)
                         }
                     </div>
                 </div>
