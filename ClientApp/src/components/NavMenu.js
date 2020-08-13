@@ -41,7 +41,7 @@ export class NavMenu extends Component {
                             <NavLink tag={Link} to="/tweet-portal">Compose Tweet</NavLink>
                         </li>
                         <li className="nav-item">
-                            <NavLink tag={Link} to="/development">Info</NavLink>
+                            <NavLink tag={Link} to="/info">Info</NavLink>
                         </li>
                     </ul>
 

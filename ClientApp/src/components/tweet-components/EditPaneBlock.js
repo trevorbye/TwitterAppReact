@@ -9,7 +9,7 @@ export class EditPaneBlock extends Component {
 
         let rawDate = new Date(this.props.tweet.ScheduledStatusTime);
         let origDate = rawDate.toLocaleDateString('sv', { timeZoneName: 'short' }).substr(0, 10);
-        let origTime = rawDate.toLocaleTimeString('sv', { timeZoneName: 'short' }).substr(0, 8);
+        let origTime = rawDate.toLocaleTimeString('sv', { timeZoneName: 'short' }).substr(0, 5);
 
         this.state = {
             editError: false,

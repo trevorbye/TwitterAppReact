@@ -84,14 +84,18 @@ export class TweetQueue extends Component {
 
     async editTweet(tweetId, editState, idx) {
         let tweetQueueCopy = Object.assign([], this.state.tweetQueue);
+        let datetime = new Date(editState.date + "T" + editState.time);
+        console.log(datetime);
+
         tweetQueueCopy[idx].StatusBody = editState.body;
+        tweetQueueCopy[idx].ScheduledStatusTime = datetime.toLocaleString();
         this.setState({
             tweetQueue: tweetQueueCopy
         });
 
         const baseUrl = "https://mstwitterbot.azurewebsites.net/";
         let authHeaders = await getAuthHeadersSilent(this.props.msalConfig);
-        await axios.post(baseUrl + "api/edit-tweet-attributes", { Id: tweetId, StatusBody: editState.body }, authHeaders);
+        await axios.post(baseUrl + "api/edit-tweet-attributes", { Id: tweetId, StatusBody: editState.body, ScheduledStatusTime: datetime }, authHeaders);
     }
 
     async approveOrCancelAndRemove(idx, type, id) {

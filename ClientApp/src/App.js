@@ -7,7 +7,7 @@ import { Login } from './components/Login';
 import { Home } from './components/Home';
 import { TweetQueue } from './components/TweetQueue';
 import { Account } from './components/Account';
-import Footer from './components/Footer';
+import { Info } from './components/Info';
 
 import { msalApp, initialCachedAuthCheck, logout } from './components/auth-utils/auth-config'
 import './custom.css'
@@ -74,9 +74,9 @@ export default class App extends Component {
                                 />}
                             />
                             <Route path="/account" render={() => <Account msalConfig={this.state.msalConfig} />} />
+                            <Route path="/info" component={Info} />
                         </Switch>
                     </Container>
-                    <Footer />
                 </div>
             );
         }

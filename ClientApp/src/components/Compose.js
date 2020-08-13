@@ -45,9 +45,7 @@ export class Compose extends Component {
         if (this.state.dateInput == "" || this.state.timeInput == "") {
             date = new Date(Date.now());
         } else {
-            date = new Date(this.state.dateInput);
-            let time = new Date(this.state.timeInput);
-            date.setHours(time.getHours(), time.getMinutes());
+            date = new Date(this.state.dateInput + "T" + this.state.timeInput);   
         }
 
         let tweetPostObject = {
