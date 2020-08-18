@@ -8,6 +8,7 @@ import { Home } from './components/Home';
 import { TweetQueue } from './components/TweetQueue';
 import { Account } from './components/Account';
 import { Info } from './components/Info';
+import { AccountRedirect } from './components/AccountRedirect';
 
 import { msalApp, initialCachedAuthCheck, logout } from './components/auth-utils/auth-config'
 import './custom.css'
@@ -75,6 +76,7 @@ export default class App extends Component {
                             />
                             <Route path="/account" render={() => <Account msalConfig={this.state.msalConfig} />} />
                             <Route path="/info" component={Info} />
+                            <Route path="/add-account-redirect" render={(props) => <AccountRedirect msalConfig={this.state.msalConfig} location={props.location} />} />
                         </Switch>
                     </Container>
                 </div>

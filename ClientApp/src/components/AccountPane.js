@@ -90,8 +90,8 @@ export class AccountPane extends Component {
                                     </Tooltip>
                                     {
                                         this.props.handle.IsPrivateAccount ?
-                                        <i class="fas fa-toggle-on fa-2x" onClick={() => this.props.togglePrivateAccount(this.props.handle, this.props.idx, false)}></i> :
-                                        <i class="fas fa-toggle-off fa-2x" onClick={() => this.props.togglePrivateAccount(this.props.handle, this.props.idx, true)}></i>
+                                        <i className="fas fa-toggle-on fa-2x" onClick={() => this.props.togglePrivateAccount(this.props.handle, this.props.idx, false)}></i> :
+                                        <i className="fas fa-toggle-off fa-2x" onClick={() => this.props.togglePrivateAccount(this.props.handle, this.props.idx, true)}></i>
                                     }
                                 </div>
 

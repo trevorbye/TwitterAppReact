@@ -57,8 +57,8 @@ export class Compose extends Component {
 
         const baseUrl = "https://mstwitterbot.azurewebsites.net/";
         let authHeaders = await getAuthHeadersSilent(this.props.msalConfig);
-        let response = await axios.post(baseUrl + "api/post-new-tweet", tweetPostObject, authHeaders);
-        if (response.status == 200) {
+        try {
+            let response = await axios.post(baseUrl + "api/post-new-tweet", tweetPostObject, authHeaders);
             let queueObject = {
                 "Id": response.data.Id,
                 "TwitterUser": response.data.TweetUser,
@@ -70,6 +70,7 @@ export class Compose extends Component {
                 "IsPostedByWebJob": false,
                 "ImageBase64Strings": this.state.imageFileList
             };
+
             this.props.addNewTweet(queueObject);
             this.setState({
                 selectedHandle: "",
@@ -84,17 +85,19 @@ export class Compose extends Component {
                 errorMessage: undefined,
                 processingTweet: false
             });
-        } else if (response.status == 404) {
-            this.setState({
-                errorMessage: "One of your images exceeds the size limit for requests within this application (22mb). Additionally, individual images must be <=5mb in size.",
-                processingTweet: false
-            
-            });
-        } else {
-            this.setState({
-                errorMessage: response.data,
-                processingTweet: false
-            });
+        } catch (error) {
+            if (error.response.status == 400) {
+                this.setState({
+                    errorMessage: error.response.data,
+                    processingTweet: false
+                });
+            } else {
+                this.setState({
+                    errorMessage: "One of your images exceeds the size limit for requests within this application (22mb). Additionally, individual images must be <=5mb in size.",
+                    processingTweet: false
+                
+                });
+            }
         }
     }
 

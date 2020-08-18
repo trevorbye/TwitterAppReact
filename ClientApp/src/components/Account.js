@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { AccountPane } from './AccountPane';
-import { getAuthHeadersSilent, tester } from './auth-utils/auth-config';
+import { getAuthHeadersSilent } from './auth-utils/auth-config';
 import axios from 'axios';
 
 export class Account extends Component {
@@ -9,7 +9,8 @@ export class Account extends Component {
 
         this.state = {
             isLoadingHandles: true,
-            handles: []
+            handles: [],
+            redirectUrl: null
         }
     }
 
@@ -81,6 +82,13 @@ export class Account extends Component {
         await axios.delete(baseUrl + `api/delete-twitter-account?handle=${handle.TwitterHandle}`, authHeaders);
     }
 
+    async twitterSignIn() {
+        const baseUrl = "https://mstwitterbot.azurewebsites.net/";
+        let authHeaders = await getAuthHeadersSilent(this.props.msalConfig);
+        let response = await axios.get(baseUrl + `api/twitter-auth-token`, authHeaders);
+        window.location.replace(`https://api.twitter.com/oauth/authenticate?oauth_token=${response.data}`);  
+    }
+
     render() {
         return (
             <div className="row">
@@ -94,7 +102,7 @@ export class Account extends Component {
                         Log out of Twitter or sign into a different account to add a different handle.
                     </p>
 
-                    <button className="btn btn-dark">
+                    <button className="btn btn-dark" onClick={() => this.twitterSignIn()}>
                         <i className="fab fa-twitter fa-md twitter"></i> Sign in with Twitter
                     </button>
                 </div>
@@ -121,6 +129,6 @@ export class Account extends Component {
                     </div>
                 </div>
             </div>
-        );
+        ); 
     }
 }

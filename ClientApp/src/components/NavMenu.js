@@ -6,7 +6,6 @@ export class NavMenu extends Component {
     constructor (props) {
         super(props);
 
-        this.toggleNavbar = this.toggleNavbar.bind(this);
         this.state = {
             collapsed: true
         };
@@ -25,11 +24,10 @@ export class NavMenu extends Component {
                     <i className="fab fa-windows fa-2x twitter mr-2"></i>
                 </Link>
                 <NavLink className="navbar-brand d-none d-sm-block" tag={Link} to="/">Twitter App (Preview)</NavLink>
-                <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                <button className="navbar-toggler" onClick={() => this.toggleNavbar()} type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>
                 </button>
-
-                <div className="collapse navbar-collapse" id="navbarText">
+                <Collapse isOpen={!this.state.collapsed} navbar>
                     <ul className="nav navbar-nav mr-auto">
                         <li className="nav-item">
                             <NavLink tag={Link} to="/account">Account</NavLink>
@@ -53,7 +51,7 @@ export class NavMenu extends Component {
                             <a href="" className="nav-link" onClick={() => this.props.logout()}>Log out</a>
                         </li>
                     </ul>
-                </div>
+                </Collapse>
             </nav>
         );
 
