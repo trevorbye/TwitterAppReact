@@ -11,7 +11,7 @@ export class TweetApproveCancelBlock extends Component {
 
     componentDidMount() {
         let className;
-        this.props.tweet.RetweetNum == 0 ? className = 'btn btn-primary btn-sm mr-1' : className = 'btn btn-warning btn-sm mr-1';
+        this.props.tweet.RetweetNum === 0 ? className = 'btn btn-primary btn-sm mr-1' : className = 'btn btn-warning btn-sm mr-1';
         this.setState({
             buttonClassName: className
         });
@@ -22,7 +22,7 @@ export class TweetApproveCancelBlock extends Component {
             <span>
                 {
                     !this.props.tweet.IsPostedByWebJob &&
-                    this.props.tweet.RetweetNum == 0 &&
+                    this.props.tweet.RetweetNum === 0 &&
                     this.props.canEdit &&
                     <button type="button" className="btn btn-primary btn-sm" data-testid="edit-btn" onClick={() => this.props.expandEditPane()}>Edit</button>
                 }
@@ -47,7 +47,7 @@ export class TweetApproveCancelBlock extends Component {
                 return (
                     <div className="d-flex w-100 justify-content-between mt-3" data-testid="approve-block">
                         <span>
-                            <button type="button" className={this.state.buttonClassName} onClick={() => this.props.approveOrCancelTweet('approve')}>{this.props.tweet.RetweetNum == 0 ? 'Approve' : 'Approve and retweet'}</button>
+                            <button type="button" className={this.state.buttonClassName} onClick={() => this.props.approveOrCancelTweet('approve')}>{this.props.tweet.RetweetNum === 0 ? 'Approve' : 'Approve and retweet'}</button>
                             <i className="fas fa-times-circle fa-lg"></i>
                         </span>
                         {this.buildButtonPane()}

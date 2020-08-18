@@ -8,7 +8,7 @@ export class WebjobPostedBlock extends Component {
                     <div className="d-flex w-100 justify-content-between mt-2" data-testid="webjob-pane">
                         <span>
                             {
-                                this.props.tweet.RetweetNum == 0 ?
+                                this.props.tweet.RetweetNum === 0 ?
                                     <i className="fab fa-twitter-square fa-lg twitter"></i> :
                                     <i className="fas fa-retweet fa-lg twitter"></i>
                             }

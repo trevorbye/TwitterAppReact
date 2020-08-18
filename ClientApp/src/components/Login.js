@@ -2,10 +2,6 @@
 import { login } from './auth-utils/auth-config'
 
 export class Login extends Component {
-    constructor(props) {
-        super(props);
-    }
-
     componentDidMount() {
         window.history.replaceState(null, "Login", "/")
     }

@@ -100,14 +100,14 @@ export class TweetQueue extends Component {
 
     async approveOrCancelAndRemove(idx, type, id) {
         let tweetQueueCopy = Object.assign([], this.state.tweetQueue);
-        type == 'approve' ? tweetQueueCopy[idx].IsApprovedByHandle = true : tweetQueueCopy[idx].IsApprovedByHandle = false;
+        type === 'approve' ? tweetQueueCopy[idx].IsApprovedByHandle = true : tweetQueueCopy[idx].IsApprovedByHandle = false;
         this.setState({
             tweetQueue: tweetQueueCopy
         });
 
         const baseUrl = "https://mstwitterbot.azurewebsites.net/";
         let authHeaders = await getAuthHeadersSilent(this.props.msalConfig);
-        type == 'approve' ?
+        type === 'approve' ?
             await axios.get(baseUrl + `api/approve-or-cancel?approveById=${id}&cancelById=0`, authHeaders) :
             await axios.get(baseUrl + `api/approve-or-cancel?cancelById=${id}&approveById=0`, authHeaders);
     }

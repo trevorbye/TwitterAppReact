@@ -42,7 +42,7 @@ export class Compose extends Component {
         this.setState({processingTweet: true});
 
         let date;
-        if (this.state.dateInput == "" || this.state.timeInput == "") {
+        if (this.state.dateInput === "" || this.state.timeInput === "") {
             date = new Date(Date.now());
         } else {
             date = new Date(this.state.dateInput + "T" + this.state.timeInput);   
@@ -86,7 +86,7 @@ export class Compose extends Component {
                 processingTweet: false
             });
         } catch (error) {
-            if (error.response.status == 400) {
+            if (error.response.status === 400) {
                 this.setState({
                     errorMessage: error.response.data,
                     processingTweet: false
@@ -112,7 +112,7 @@ export class Compose extends Component {
         this.setState({
             bodyState: {
                 text: event.target.value,
-                isValid: result.isValid && event.target.value != "",
+                isValid: result.isValid && event.target.value !== "",
                 bodyLenText: result.textReturn
             }
         });
@@ -241,7 +241,7 @@ export class Compose extends Component {
 
                 {
                     this.state.bodyState.isValid &&
-                    this.state.selectedHandle != "" &&
+                    this.state.selectedHandle !== "" &&
                     this.state.imageFileList.length <= 4 ?
                     <div className="mb-3">
                         <button type="button" className="btn btn-success tweet" onClick={() => this.createTweet()}> 
