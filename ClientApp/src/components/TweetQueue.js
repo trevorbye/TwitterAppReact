@@ -84,8 +84,12 @@ export class TweetQueue extends Component {
 
     async editTweet(tweetId, editState, idx) {
         let tweetQueueCopy = Object.assign([], this.state.tweetQueue);
-        let datetime = new Date(editState.date + "T" + editState.time);
-        console.log(datetime);
+        let datetime;
+        if (editState.date === "" || editState.time === "") {
+            datetime = new Date(Date.now());
+        } else {
+            datetime = new Date(editState.date + "T" + editState.time);
+        }
 
         tweetQueueCopy[idx].StatusBody = editState.body;
         tweetQueueCopy[idx].ScheduledStatusTime = datetime.toLocaleString();
