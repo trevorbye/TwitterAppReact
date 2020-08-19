@@ -64,7 +64,7 @@ export class AccountPane extends Component {
                                 </div>
                                 <div className="d-flex w-100 justify-content-between mb-3">
                                     <p className="my-auto">Delete account</p>
-                                    <button type="button" className="btn btn-danger my-auto" onClick={() => this.toggleModal()}>
+                                    <button type="button" className="btn btn-danger my-auto" onClick={() => this.toggleModal()} data-testid="account-del-btn">
                                         Delete &nbsp; <i className="fas fa-trash-alt"></i>
                                     </button>
                                 </div>
@@ -126,7 +126,7 @@ export class AccountPane extends Component {
                 <div className="list-group-item list-group-item-action flex-column align-items-start">
                     <div className="d-flex w-100 justify-content-between align-items-center">
                         <h5 className="my-auto handles">{this.props.handle.TwitterHandle}</h5>
-                        <button className="btn btn-primary my-auto" onClick={() => this.expandSettings()}>
+                        <button className="btn btn-primary my-auto" onClick={() => this.expandSettings()} data-testid="expand-account-settings">
                             Settings &nbsp; <i className="fas fa-chevron-down"></i>
                         </button>
                     </div>

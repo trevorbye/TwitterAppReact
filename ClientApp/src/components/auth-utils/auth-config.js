@@ -17,7 +17,7 @@ export async function login(msalUserAgentApp) {
     try {
         await msalUserAgentApp.loginPopup();
     } catch (e) {
-        window.location.href = "/";
+        window.location.replace("/");
     }
     return msalUserAgentApp.getAccount();
 }
@@ -45,18 +45,22 @@ export async function getAuthHeadersSilent(msalUserAgentApp) {
     let requestParams = {
         scopes: [clientIdString]
     };
-    let token = await msalUserAgentApp.acquireTokenSilent(requestParams);
-    let headers = {
-        headers: {
-            "Content-type": "application/json",
-            "Cache-Control": "no-store, no-cache, must-revalidate",
-            "Pragma": "no-cache",
-            "Authorization": "Bearer " + token.accessToken
-        }
-    }
+    let token = null;
+    try {
+        token = await msalUserAgentApp.acquireTokenSilent(requestParams);
+    } catch (e) {}
+
     if (token == null) {
-        window.location.href = "/";
+        window.location.replace("/");
     } else {
+        let headers = {
+            headers: {
+                "Content-type": "application/json",
+                "Cache-Control": "no-store, no-cache, must-revalidate",
+                "Pragma": "no-cache",
+                "Authorization": "Bearer " + token.accessToken
+            }
+        }
         return headers;
     }
 }
