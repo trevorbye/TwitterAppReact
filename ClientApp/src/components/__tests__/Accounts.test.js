@@ -54,7 +54,7 @@ describe("Tests for account portal.", () => {
             }
         ];
 
-        // manually append tooltip divs to DOM otherwise react can't find them
+        // manually append tooltip divs to DOM otherwise enzyme can't find them
         // https://github.com/reactstrap/reactstrap/issues/773
         const tooltipDiv = document.createElement("div");
         const innerToolTipDiv = document.createElement("div");
