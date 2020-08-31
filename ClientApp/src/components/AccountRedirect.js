@@ -32,7 +32,7 @@ export class AccountRedirect extends Component {
         } catch (error) {
             this.setState({
                 waiting: false,
-                handle: error.response.data
+                handle: error.response.data.Message
             });
         }
     }
