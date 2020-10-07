@@ -6,7 +6,7 @@
     color: #dc3545;
 }
 
-.fa-check, .fa-check-circle, .fa-twitter-square {
+.fa-check, .fa-check-circle, .fa-twitter-square, .new-text, .approved-circle {
     color: #28a745;
 }
 
@@ -67,7 +67,7 @@
         color: #a8a8a8;
     }
 
-.fa-user {
+.fa-user, .fa-calendar-alt {
     color: #2b2b2b;
 }
 
@@ -92,7 +92,7 @@
     color: rgba(255, 255, 255, .7) !important;
 }
 
-.trash-hover:hover {
+.trash-hover:hover, .fa-calendar-alt:hover {
     color: #a1a1a1;
     cursor: pointer;
 }
@@ -109,7 +109,7 @@
     color: #dbdbdb;
 }
 
-.fa-user, .fa-clock, .fa-check, .fa-times-circle, .fa-toggle-on, .fa-toggle-off {
+.fa-user, .fa-clock, .fa-check, .fa-times-circle, .fa-toggle-on, .fa-toggle-off, .fa-calendar-alt, .badge {
     vertical-align: middle;
 }
 
@@ -117,6 +117,39 @@
     vertical-align: middle;
 }
 
-.fa-github {
-    color: #1c1c1c;
+.not-approved-circle {
+    color: #a1a1a1;
+}
+
+.cal-badge {
+    background-color: #1a3c94;
+}
+
+.cal-twitter {
+    color: #1DA1F2;
+}
+
+.rbc-event-label {
+    display: none;
+}
+
+.cal-approve {
+    color: black;
+    cursor: pointer;
+}
+
+.cal-approve:hover {
+    background-color: #d39e00;
+}
+
+.nav-background {
+    background-color: #2a57cc;
+}
+
+.fa-windows {
+    color: white;
+}
+
+.nav-link-cust:hover {
+    color: white;
 }

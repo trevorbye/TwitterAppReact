@@ -86,6 +86,7 @@ export class Compose extends Component {
                 processingTweet: false
             });
         } catch (error) {
+            console.log(error);
             if (error.response.status === 400) {
                 this.setState({
                     errorMessage: error.response.data,

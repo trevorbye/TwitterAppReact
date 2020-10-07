@@ -9,7 +9,7 @@ export class Info extends Component {
                     <p>
                         This project is open-source, and anyone at Microsoft is welcome to contribute. Our front-end is built in React, and you can submit
                         a <a href="https://github.com/trevorbye/TwitterAppReact">pull-request</a> for new features or bug-fixes. The back-end is a decoupled REST API built with .NET Framework Web API with various 
-                        webjobs, and custom blob storage for binary media data. The repo for the API is private, but you can contact us if you want to contribute.
+                        webjobs, and custom blob storage for binary media data. The repo for the API is private, but you can contact <b>trbye@microsoft.com</b> if you want to contribute.
                     </p>
                 </div>
                 <div className="col-md-6">

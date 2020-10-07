@@ -1,6 +1,7 @@
 ﻿import React, { Component } from 'react';
 import { BasicTweetBlock } from './tweet-components/BasicTweetBlock';
 import { Compose } from './Compose.js';
+import { CalendarModal } from './CalendarModal.js';
 
 import axios from 'axios';
 import { getAuthHeadersSilent } from './auth-utils/auth-config';
@@ -13,7 +14,9 @@ export class TweetQueue extends Component {
         this.state = {
             isLoadingQueue: true,
             tweetQueue: [],
-            imageDeleteInProg: false
+            imageDeleteInProg: false,
+            calendarModalOpen: false,
+            eventList: []
         }
     }
 
@@ -37,13 +40,56 @@ export class TweetQueue extends Component {
             isLoadingQueue: false,
             tweetQueue: tweetQueue
         });
+
+        // build event list for calendar
+        let eventList = [];
+        let id = 0;
+        this.state.tweetQueue.forEach(function(tweet, idx) {
+            let datetime = new Date(tweet.ScheduledStatusTime)
+            let event = {
+                id: id,
+                title: tweet.StatusBody,
+                start: datetime,
+                end: datetime,
+                tweetQueueId: tweet.Id,
+                approved: tweet.IsApprovedByHandle,
+                handle: tweet.TwitterHandle,
+                posted: tweet.IsPostedByWebJob
+            }
+            eventList.push(event)
+            id += 1;
+        });
+
+        this.setState({
+            eventList: eventList
+        })
+    }
+
+    toggleCalendarModal() {
+        this.setState({
+            calendarModalOpen: !this.state.calendarModalOpen
+        })
     }
 
     addNewTweet(tweetQueue) {
         let tweetQueueCopy = Object.assign([], this.state.tweetQueue);
+        let eventListCopy = Object.assign([], this.state.eventList);
+        let eventTime = new Date(tweetQueue.ScheduledStatusTime)
+        let event = {
+            id: eventListCopy[eventListCopy.length - 1].id + 1,
+            title: tweetQueue.StatusBody,
+            start: eventTime,
+            end: eventTime,
+            tweetQueueId: tweetQueue.Id,
+            approved: false,
+            handle: tweetQueue.TwitterHandle,
+            posted: tweetQueue.IsPostedByWebJob
+        }
+        eventListCopy.push(event)
         tweetQueueCopy.unshift(tweetQueue);
         this.setState({
-            tweetQueue: tweetQueueCopy
+            tweetQueue: tweetQueueCopy,
+            eventList: eventListCopy
         })
     }
 
@@ -52,6 +98,18 @@ export class TweetQueue extends Component {
         tweetQueueCopy.splice(idx, 1);
         this.setState({
             tweetQueue: tweetQueueCopy
+        });
+
+        let eventListCopy = Object.assign([], this.state.eventList);
+        let spliceIdx;
+        for (spliceIdx = 0; spliceIdx < eventListCopy.length; spliceIdx++) {
+            if (eventListCopy[spliceIdx].tweetQueueId === id) {
+                eventListCopy.splice(spliceIdx, 1);
+                break;
+            }
+        }
+        this.setState({
+            eventList: eventListCopy
         });
 
         const baseUrl = "https://mstwitterbot.azurewebsites.net/";
@@ -97,6 +155,21 @@ export class TweetQueue extends Component {
             tweetQueue: tweetQueueCopy
         });
 
+        let eventListCopy = Object.assign([], this.state.eventList);
+        let spliceIdx;
+        for (spliceIdx = 0; spliceIdx < eventListCopy.length; spliceIdx++) {
+            if (eventListCopy[spliceIdx].tweetQueueId === tweetId) {
+                let time = new Date(datetime)
+                eventListCopy[spliceIdx].start = time
+                eventListCopy[spliceIdx].end = time
+                eventListCopy[spliceIdx].title = editState.body
+                break;
+            }
+        }
+        this.setState({
+            eventList: eventListCopy
+        });
+
         const baseUrl = "https://mstwitterbot.azurewebsites.net/";
         let authHeaders = await getAuthHeadersSilent(this.props.msalConfig);
         await axios.post(baseUrl + "api/edit-tweet-attributes", { Id: tweetId, StatusBody: editState.body, ScheduledStatusTime: datetime }, authHeaders);
@@ -104,9 +177,33 @@ export class TweetQueue extends Component {
 
     async approveOrCancelAndRemove(idx, type, id) {
         let tweetQueueCopy = Object.assign([], this.state.tweetQueue);
-        type === 'approve' ? tweetQueueCopy[idx].IsApprovedByHandle = true : tweetQueueCopy[idx].IsApprovedByHandle = false;
+        // if idx==-1, request is coming from inside calendar, so we need to find the idx in the tweetqueue first from the id
+        if (idx === -1){
+            var searchIdx = 0;
+            while (searchIdx < tweetQueueCopy.length) {
+                if (tweetQueueCopy[searchIdx].Id === id) {
+                    break;
+                }
+                searchIdx++;
+            }
+        }
+        
+        let tmpIdx = idx === -1 ? searchIdx : idx;
+        type === 'approve' ? tweetQueueCopy[tmpIdx].IsApprovedByHandle = true : tweetQueueCopy[tmpIdx].IsApprovedByHandle = false;
         this.setState({
             tweetQueue: tweetQueueCopy
+        });
+
+        let eventListCopy = Object.assign([], this.state.eventList);
+        let spliceIdx;
+        for (spliceIdx = 0; spliceIdx < eventListCopy.length; spliceIdx++) {
+            if (eventListCopy[spliceIdx].tweetQueueId === id) {
+                type === 'approve' ? eventListCopy[spliceIdx].approved = true : eventListCopy[spliceIdx].approved = false;
+                break;
+            }
+        }
+        this.setState({
+            eventList: eventListCopy
         });
 
         const baseUrl = "https://mstwitterbot.azurewebsites.net/";
@@ -133,12 +230,20 @@ export class TweetQueue extends Component {
                     <Compose msalConfig={this.props.msalConfig} addNewTweet={(tweet) => this.addNewTweet(tweet)} />
 
                     <div className="col-md-6 mb-3">
-                        <h2 className="mb-3">Requested tweets</h2>
+                        <div className="d-flex w-100 justify-content-between mb-3">
+                            <span>
+                                <h2>Requested tweets</h2>
+                            </span>
+                            <span>
+                                <i class="far fa-calendar-alt fa-2x" onClick={() => this.toggleCalendarModal()}></i><sup> <b className="new-text">NEW</b></sup>
+                            </span>
+                        </div>
+
                         <p className="mb-3">
                             View your active requested Tweets. The icons indicate whether or not the handle owner has approved your request.
                             You can <b>Delete</b> both approved and unapproved Tweets. The <i className="fab fa-twitter-square fa-lg twitter"></i> indicates
                             that the Tweet has been posted and is safe to delete from your queue.
-                    </p>
+                        </p>
                         {this.state.isLoadingQueue && this.loadingQueueDiv()}
 
                         <div className="list-group scroll-group" style={{ maxHeight: (this.props.viewportHeight - 400) + "px" }}>
@@ -155,13 +260,28 @@ export class TweetQueue extends Component {
                             }
                         </div>
                     </div>
+                    <CalendarModal 
+                        events={this.state.eventList} 
+                        toggleCalendarModal={() => this.toggleCalendarModal()} 
+                        calendarModalOpen={this.state.calendarModalOpen}
+                        approveOrCancel={(idx, type, id) => this.approveOrCancelAndRemove(idx, type, id)}
+                        canApprove={false}
+                    />
                 </div>
             );
         } else {
             return (
                 <div className="row">
                     <div className="col-md-12 mb-3">
-                        <h2 className="mb-3">Your Tweet queue</h2>
+                        <div className="d-flex w-100 justify-content-between mb-3">
+                            <span>
+                                <h2>Your Tweet queue</h2>
+                            </span>
+                            <span>
+                                <i className="far fa-calendar-alt fa-2x" onClick={() => this.toggleCalendarModal()}></i><sup> <b className="new-text">NEW</b></sup>
+                            </span>
+                        </div>
+                        
                         <p className="mb-3">
                             These are all current Tweets that users have requested to post to any of your configured Twitter accounts.
                             Approve the request to post the Tweet at the scheduled time. You can edit the content of a tweet, and cancel your approval
@@ -184,6 +304,14 @@ export class TweetQueue extends Component {
                             }
                         </div>
                     </div>
+
+                    <CalendarModal 
+                        events={this.state.eventList} 
+                        toggleCalendarModal={() => this.toggleCalendarModal()} 
+                        calendarModalOpen={this.state.calendarModalOpen}
+                        approveOrCancel={(idx, type, id) => this.approveOrCancelAndRemove(idx, type, id)} 
+                        canApprove={true}
+                    />
                 </div>
             );
         }

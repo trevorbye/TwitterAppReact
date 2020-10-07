@@ -19,9 +19,9 @@ export class NavMenu extends Component {
 
     render() {
         return (
-            <nav className="navbar navbar-expand-md bg-dark navbar-dark fixed-top">
+            <nav className="navbar navbar-expand-md navbar-dark fixed-top nav-background">
                 <Link to="/">
-                    <i className="fab fa-windows fa-2x twitter mr-2"></i>
+                    <i className="fab fa-windows fa-2x twitter mr-1"></i>
                 </Link>
                 <NavLink className="navbar-brand d-none d-sm-block" tag={Link} to="/">Twitter App (Preview)</NavLink>
                 <button className="navbar-toggler" onClick={() => this.toggleNavbar()} type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
