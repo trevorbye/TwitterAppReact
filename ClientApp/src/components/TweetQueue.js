@@ -227,7 +227,10 @@ export class TweetQueue extends Component {
             return (
                 <div className="row">
 
-                    <Compose msalConfig={this.props.msalConfig} addNewTweet={(tweet) => this.addNewTweet(tweet)} />
+                    <Compose 
+                        msalConfig={this.props.msalConfig} 
+                        addNewTweet={(tweet) => this.addNewTweet(tweet)}
+                    />
 
                     <div className="col-md-6 mb-3">
                         <div className="d-flex w-100 justify-content-between mb-3">
@@ -266,6 +269,7 @@ export class TweetQueue extends Component {
                         calendarModalOpen={this.state.calendarModalOpen}
                         approveOrCancel={(idx, type, id) => this.approveOrCancelAndRemove(idx, type, id)}
                         canApprove={false}
+                        modalTitle={"Requests calendar"}
                     />
                 </div>
             );
@@ -311,6 +315,7 @@ export class TweetQueue extends Component {
                         calendarModalOpen={this.state.calendarModalOpen}
                         approveOrCancel={(idx, type, id) => this.approveOrCancelAndRemove(idx, type, id)} 
                         canApprove={true}
+                        modalTitle={"Queue calendar"}
                     />
                 </div>
             );

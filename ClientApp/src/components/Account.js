@@ -70,6 +70,18 @@ export class Account extends Component {
         await axios.get(baseUrl + `api/toggle-private-account?handle=${handle.TwitterHandle}&isPrivate=${isPrivate}`, authHeaders);
     }
 
+    async toggleMakeSchedulePublic(handle, idx, isPublic) {
+        let handlesCopy = Object.assign([], this.state.handles);
+        handlesCopy[idx].IsTweetSchedulePublic = isPublic;
+        this.setState({
+            handles: handlesCopy
+        });
+
+        const baseUrl = "https://mstwitterbot.azurewebsites.net/";
+        let authHeaders = await getAuthHeadersSilent(this.props.msalConfig);
+        await axios.get(baseUrl + `api/toggle-public-schedule?handle=${handle.TwitterHandle}&isPublic=${isPublic}`, authHeaders);
+    }
+
     async deleteAccount(handle, idx) {
         let handlesCopy = Object.assign([], this.state.handles);
         handlesCopy.splice(idx, 1);
@@ -124,6 +136,7 @@ export class Account extends Component {
                                 enableAutoTweets={(handle, idx) => this.enableAutoTweets(handle, idx)} 
                                 togglePrivateAccount={(handle, idx, isPrivate) => this.togglePrivateAccount(handle, idx, isPrivate)} 
                                 deleteAccount={(handle, idx) => this.deleteAccount(handle, idx)}
+                                togglePublicSchedule={(handle, idx, isPublic) => this.toggleMakeSchedulePublic(handle, idx, isPublic)}
                                 />)
                         }
                     </div>

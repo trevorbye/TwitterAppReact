@@ -2,6 +2,7 @@
 import { getAuthHeadersSilent } from './auth-utils/auth-config';
 import { validateTweetBody } from './utils/twitter-text-util.js';
 import { TweetImageBlock } from './tweet-components/TweetImageBlock';
+import { CalendarModal } from './CalendarModal.js';
 import { fileToBase64 } from './utils/file-util';
 import axios from 'axios';
 
@@ -11,6 +12,7 @@ export class Compose extends Component {
 
         this.state = {
             globalHandles: [],
+            publicHandleEvents: [],
             selectedHandle: "",
             bodyState: {
                 text: "",
@@ -21,7 +23,8 @@ export class Compose extends Component {
             timeInput: "",
             imageFileList: [],
             errorMessage: undefined,
-            processingTweet: false
+            processingTweet: false,
+            calendarOpen: false
         }
     }
 
@@ -102,9 +105,39 @@ export class Compose extends Component {
         }
     }
 
-    dropdownChange(event) {
+    async dropdownChange(event) {
+        event.persist();
+
         this.setState({
-            selectedHandle: event.target.value
+            selectedHandle: event.target.value,
+            publicHandleEvents: []
+        });
+
+        const baseUrl = "https://mstwitterbot.azurewebsites.net/";
+        let authHeaders = await getAuthHeadersSilent(this.props.msalConfig);
+        let res = await axios.get(baseUrl + `api/get-public-schedule?handle=${event.target.value}`, authHeaders);
+        let publicQueue = res.data;
+
+        let eventList = [];
+        let id = 0;
+        publicQueue.forEach(function(tweet, idx) {
+            let datetime = new Date(tweet.ScheduledStatusTime)
+            let event = {
+                id: id,
+                title: null,
+                start: datetime,
+                end: datetime,
+                tweetQueueId: tweet.Id,
+                approved: tweet.IsApprovedByHandle,
+                handle: tweet.TwitterHandle,
+                posted: tweet.IsPostedByWebJob
+            }
+            eventList.push(event)
+            id += 1;
+        });
+
+        this.setState({
+            publicHandleEvents: eventList
         });
     }
 
@@ -151,19 +184,40 @@ export class Compose extends Component {
         });
     }
 
+    toggleCalendarModal() {
+        this.setState({
+            calendarOpen: !this.state.calendarOpen
+        });
+    }
 
     render() {
         return (
             <div className="col-md-6">
-                <h2 className="mb-3">Compose and schedule</h2>
+                <div className="d-flex w-100 justify-content-between mb-3">
+                    <span>
+                        <h2>Compose and schedule</h2>
+                    </span>
+                </div>
+                
                 <p className="mb-3">
                     Select a handle, compose a tweet, and choose a time when the status will be posted to the account. The
-                    request will be routed to the handle owner for approval.
+                    request will be routed to the handle owner for approval. If the handle owner has made their tweet schedule public,
+                    click the calendar to view it. 
                 </p>
 
                 <div className="input-group mb-3">
                     <div className="input-group-prepend">
                         <label className="input-group-text" for="handleSelect">Twitter handle</label>
+                        {
+                            this.state.publicHandleEvents.length > 0 ?
+                            <span className="input-group-text">
+                                <i className="far fa-calendar-alt fa-lg public-calendar" onClick={() => this.toggleCalendarModal()}></i><sup className="ml-1"> <b className="new-text">NEW</b></sup>
+                            </span> 
+                            :
+                            <span className="input-group-text">
+                                <i className="far fa-calendar-alt fa-lg public-calender-disabled" disabled></i><sup className="ml-1"> <b className="new-text">NEW</b></sup>
+                            </span>
+                        }
                     </div>
                     <select className="custom-select" id="handleSelect" onChange={(e) => this.dropdownChange(e)} value={this.state.selectedHandle}>
                         {
@@ -274,6 +328,15 @@ export class Compose extends Component {
                         <strong>Oops!</strong> You exceeded the maximum of <strong>4</strong> images.
                     </div>
                 }
+
+                <CalendarModal 
+                    events={this.state.publicHandleEvents} 
+                    toggleCalendarModal={() => this.toggleCalendarModal()} 
+                    calendarModalOpen={this.state.calendarOpen}
+                    canApprove={false}
+                    key={"public"}
+                    modalTitle={this.state.selectedHandle + " tweet calendar"}
+                />
                 
             </div>
         );

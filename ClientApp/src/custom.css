@@ -153,3 +153,22 @@
 .nav-link-cust:hover {
     color: white;
 }
+
+.public-calender-disabled {
+    cursor: not-allowed !important;
+    color: #6fc3f7
+}
+
+.public-calender-disabled:hover {
+    color: #6fc3f7
+}
+
+.public-calendar {
+    color: #1DA1F2;
+    cursor: pointer;
+}
+
+.public-calendar:hover {
+    color: #6fc3f7;
+    cursor: pointer;
+}

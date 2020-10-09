@@ -96,7 +96,7 @@ export class CalendarModal extends Component {
     render() {
         return (
             <Modal isOpen={this.props.calendarModalOpen} toggle={() => this.props.toggleCalendarModal()} tabIndex="-1" size="xl">
-                <ModalHeader toggle={() => this.props.toggleCalendarModal()}>{this.getTitle()}</ModalHeader>
+                <ModalHeader toggle={() => this.props.toggleCalendarModal()}>{this.props.modalTitle}</ModalHeader>
                 <ModalBody>
                     {this.getCalendarType()}
                 </ModalBody>

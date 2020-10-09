@@ -10,6 +10,7 @@ export class AccountPane extends Component {
             settingsExpanded: false,
             mentionTooltipOpen: false,
             privateTooltipOpen: false,
+            scheduleTooltipOpen: false,
             deleteModalOpen: false
         }
     }
@@ -35,6 +36,12 @@ export class AccountPane extends Component {
     togglePrivateTooltip() {
         this.setState({
             privateTooltipOpen: !this.state.privateTooltipOpen
+        });
+    }
+
+    toggleScheduleTooltip() {
+        this.setState({
+            scheduleTooltipOpen: !this.state.scheduleTooltipOpen
         });
     }
 
@@ -92,6 +99,18 @@ export class AccountPane extends Component {
                                         this.props.handle.IsPrivateAccount ?
                                         <i className="fas fa-toggle-on fa-2x" onClick={() => this.props.togglePrivateAccount(this.props.handle, this.props.idx, false)}></i> :
                                         <i className="fas fa-toggle-off fa-2x" onClick={() => this.props.togglePrivateAccount(this.props.handle, this.props.idx, true)}></i>
+                                    }
+                                </div>
+
+                                <div className="d-flex w-100 justify-content-between mb-3">
+                                    <p className="my-auto">Enable public tweet schedule <i className="fas fa-info-circle" id="schedule-tooltip"></i></p>
+                                    <Tooltip placement="top" target="schedule-tooltip" isOpen={this.state.scheduleTooltipOpen} toggle={() => this.toggleScheduleTooltip()}>
+                                        When toggled on, this account's scheduled tweets will be <b>visible</b> to <b>all</b> users of this application. Tweet content is not displayed; only scheduled time and approval status are displayed.
+                                    </Tooltip>
+                                    {
+                                        this.props.handle.IsTweetSchedulePublic ?
+                                        <i className="fas fa-toggle-on fa-2x" onClick={() => this.props.togglePublicSchedule(this.props.handle, this.props.idx, false)}></i> :
+                                        <i className="fas fa-toggle-off fa-2x" onClick={() => this.props.togglePublicSchedule(this.props.handle, this.props.idx, true)}></i>
                                     }
                                 </div>
 
