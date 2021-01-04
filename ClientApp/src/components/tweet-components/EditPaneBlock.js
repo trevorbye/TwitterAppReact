@@ -2,6 +2,7 @@
 import { SlideDown } from 'react-slidedown';
 import 'react-slidedown/lib/slidedown.css';
 import { validateTweetBody } from '../utils/twitter-text-util.js';
+import { PollBlock } from "./PollBlock";
 
 export class EditPaneBlock extends Component {
     constructor(props) {
@@ -19,7 +20,9 @@ export class EditPaneBlock extends Component {
             bodyLenText: validateTweetBody(this.props.tweet.StatusBody).textReturn,
             isValidBody: true,
             date: origDate,
-            time: origTime
+            time: origTime,
+            poll: props.tweet.Poll,
+            externalTweetId: props.tweet.TweetId
         }
     }
 
@@ -30,7 +33,8 @@ export class EditPaneBlock extends Component {
             bodyLenText: validateTweetBody(this.props.tweet.StatusBody).textReturn,
             isValidBody: true,
             date: this.state.origDate,
-            time: this.state.origTime 
+            time: this.state.origTime,
+            poll: this.state.poll
         })
     }
 
@@ -41,6 +45,12 @@ export class EditPaneBlock extends Component {
             bodyLenText: result.textReturn,
             isValidBody: result.isValid
         })
+    }
+    pollOnChange(newPoll) {
+        this.setState({
+            poll: newPoll,
+        });
+        console.log("EditPaneBlock state changed");
     }
 
     dateChange(event) {
@@ -79,19 +89,26 @@ export class EditPaneBlock extends Component {
                             <span className="badge" data-testid="twttr-chars">{this.state.bodyLenText}</span>
                         </div>
 
+                        <PollBlock
+                            caller="EditPanelBlock-false"
+                            isReadOnly={false}
+                            poll={this.state.poll}
+                            onChange={(e) => this.pollOnChange(e)}
+                        />
+
                         <div className="input-group mb-3">
                             <div className="input-group-prepend">
                                 <span className="input-group-text">
                                     Scheduled date & time
                                 </span>
                             </div>
-                            <input id="tweet-date" type="date" max="3000-12-31" min="1000-01-01" className="form-control" 
-                                value={this.state.date} 
-                                onChange={(e) => this.dateChange(e)} 
+                            <input id="tweet-date" type="date" max="3000-12-31" min="1000-01-01" className="form-control"
+                                value={this.state.date}
+                                onChange={(e) => this.dateChange(e)}
                             />
-                            <input id="tweet-time" type="time" className="form-control" 
-                                value={this.state.time} 
-                                onChange={(e) => this.timeChange(e)} 
+                            <input id="tweet-time" type="time" className="form-control"
+                                value={this.state.time}
+                                onChange={(e) => this.timeChange(e)}
                             />
                         </div>
 

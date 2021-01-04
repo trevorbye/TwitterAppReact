@@ -9,7 +9,8 @@ describe("Basic tweet block tests.", () => {
             StatusBody: "a test twitter status",
             TwitterHandle: "@TestHandle",
             ScheduledStatusTime: "12:00",
-            TweetUser: "email@test.com"
+            TweetUser: "email@test.com",
+            Poll: ""
         };
         const wrapper = shallow(<BasicTweetBlock tweet={tweet} canEdit={true} />);
         expect(wrapper.text()).toContain("a test twitter status");
@@ -26,7 +27,8 @@ describe("Basic tweet block tests.", () => {
             TweetUser: "email@test.com",
             IsPostedByWebJob: false,
             IsApprovedByHandle: false,
-            RetweetNum: 0
+            RetweetNum: 0,
+            Poll: ""
         };
         const wrapper = mount(<BasicTweetBlock tweet={tweet} canEdit={true} />);
         expect(wrapper.text()).toContain("Edit");
@@ -40,7 +42,8 @@ describe("Basic tweet block tests.", () => {
             TweetUser: "email@test.com",
             IsPostedByWebJob: false,
             IsApprovedByHandle: false,
-            RetweetNum: 0
+            RetweetNum: 0,
+            Poll: ""
         };
         const wrapper = mount(<BasicTweetBlock tweet={tweet} canEdit={false} />);
         expect(wrapper.text()).not.toContain("Edit");
@@ -54,7 +57,8 @@ describe("Basic tweet block tests.", () => {
             TweetUser: "email@test.com",
             IsPostedByWebJob: false,
             IsApprovedByHandle: false,
-            RetweetNum: 0
+            RetweetNum: 0,
+            Poll: ""
         };
         const wrapper = mount(<BasicTweetBlock tweet={tweet} canEdit={true} />);
         wrapper.find("[data-testid='edit-btn']").simulate("click");
@@ -69,7 +73,8 @@ describe("Basic tweet block tests.", () => {
             TweetUser: "email@test.com",
             IsPostedByWebJob: false,
             IsApprovedByHandle: false,
-            RetweetNum: 0
+            RetweetNum: 0,
+            Poll: ""
         };
         const wrapper = mount(<BasicTweetBlock tweet={tweet} canEdit={true} />);
         const editBtn = wrapper.find("[data-testid='edit-btn']");
@@ -91,7 +96,8 @@ describe("Basic tweet block tests.", () => {
             TweetUser: "email@test.com",
             IsPostedByWebJob: false,
             IsApprovedByHandle: false,
-            RetweetNum: 0
+            RetweetNum: 0,
+            Poll: ""
         };
         const wrapper = mount(<BasicTweetBlock tweet={tweet} canEdit={false} />);
         expect(wrapper.find("[data-testid='edit-variant']").exists()).toBeFalsy();
@@ -106,7 +112,8 @@ describe("Basic tweet block tests.", () => {
             TweetUser: "email@test.com",
             IsPostedByWebJob: false,
             IsApprovedByHandle: true,
-            RetweetNum: 0
+            RetweetNum: 0,
+            Poll: ""
         };
         const wrapper = mount(<BasicTweetBlock tweet={tweet} canEdit={false} />);
         expect(wrapper.find("[data-testid='approved']").exists()).toBeTruthy();
@@ -121,7 +128,8 @@ describe("Basic tweet block tests.", () => {
             TweetUser: "email@test.com",
             IsPostedByWebJob: false,
             IsApprovedByHandle: false,
-            RetweetNum: 0
+            RetweetNum: 0,
+            Poll: ""
         };
         const wrapper = mount(<BasicTweetBlock tweet={tweet} canEdit={false} />);
         expect(wrapper.find("[data-testid='not-approved']").exists()).toBeTruthy();

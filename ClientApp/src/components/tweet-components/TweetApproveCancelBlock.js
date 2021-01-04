@@ -1,4 +1,5 @@
 ﻿import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
 export class TweetApproveCancelBlock extends Component {
     constructor(props) {
@@ -40,17 +41,22 @@ export class TweetApproveCancelBlock extends Component {
                             <button type="button" className="btn btn-primary btn-sm mr-1" onClick={() => this.props.approveOrCancelTweet('cancel')}>Cancel</button>
                             <i className="fas fa-check fa-lg"></i>
                         </span>
-                        {this.buildButtonPane()}
+                        <>
+                            {this.buildButtonPane()}
+                        </>
                     </div>
                 );
             } else {
                 return (
                     <div className="d-flex w-100 justify-content-between mt-3" data-testid="approve-block">
+                        {((this.props.tweet.Poll) && (this.props.tweet.Poll.hasPoll === true)) && <span><Link to={`/tweet?id=${this.props.tweet.Id}`}>Post tweet manually</Link></span>}
                         <span>
                             <button type="button" className={this.state.buttonClassName} onClick={() => this.props.approveOrCancelTweet('approve')}>{this.props.tweet.RetweetNum === 0 ? 'Approve' : 'Approve and retweet'}</button>
                             <i className="fas fa-times-circle fa-lg"></i>
                         </span>
-                        {this.buildButtonPane()}
+                            <>
+                                {this.buildButtonPane()}
+                            </>
                     </div>
                 );
             }

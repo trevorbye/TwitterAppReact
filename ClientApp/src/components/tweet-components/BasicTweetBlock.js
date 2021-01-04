@@ -3,7 +3,8 @@ import { TweetImageBlock } from './TweetImageBlock';
 import { TweetApproveCancelBlock } from './TweetApproveCancelBlock';
 import { WebjobPostedBlock } from './WebjobPostedBlock';
 import { EditPaneBlock } from './EditPaneBlock';
-import { TimeAndApprovalBlock } from './TimeAndApprovalBlock'
+import { PollBlock } from './PollBlock';
+import { TimeAndApprovalBlock } from './TimeAndApprovalBlock';
 
 export class BasicTweetBlock extends Component {
     constructor(props) {
@@ -69,6 +70,12 @@ export class BasicTweetBlock extends Component {
                         }
                     </ul>
                 }
+                
+                <PollBlock
+                        isReadOnly={true}
+                        poll={this.props.tweet.Poll}
+                        caller="BasicTweetBlock"
+                    />
 
                 {
                     this.props.canEdit &&

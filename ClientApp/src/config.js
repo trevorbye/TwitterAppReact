@@ -1,7 +1,14 @@
-const BASE_URL = () => {
-    return (process.env.NODE_ENV === 'production') ? 'https://mstwitterbot.azurewebsites.net/' : 'https://localhost:52937/';
+const API_BASE_URL = () => {
+    const baseApiUrl = (process.env.NODE_ENV === 'production') ? 'https://mstwitterbot.azurewebsites.net/' : 'http://localhost:52937/';
+    
+    return baseApiUrl;
+}
+
+const NAV_CSS = () => {
+    return (process.env.NODE_ENV === 'production') ? 'nav-background-dev' : 'nav-background-dev';
 }
 
 export {
-    BASE_URL
+    NAV_CSS,
+    API_BASE_URL
 }

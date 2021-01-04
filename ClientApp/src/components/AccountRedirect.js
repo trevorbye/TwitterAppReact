@@ -3,6 +3,9 @@ import { Link } from 'react-router-dom';
 import { getAuthHeadersSilent } from './auth-utils/auth-config';
 import { parse } from 'query-string';
 import axios from 'axios';
+import { API_BASE_URL } from '../config';
+
+const baseUrl = API_BASE_URL();
 
 export class AccountRedirect extends Component {
     constructor(props) {
@@ -20,10 +23,9 @@ export class AccountRedirect extends Component {
         let token = params.oauth_token;
         let verifier = params.oauth_verifier;
 
-        const baseUrl = "https://mstwitterbot.azurewebsites.net/";
         let authHeaders = await getAuthHeadersSilent(this.props.msalConfig);
         try {
-            let res = await axios.get(baseUrl + `api/convert-to-access-token?token=${token}&verifier=${verifier}`, authHeaders);
+            let res = await axios.get(`${baseUrl}api/convert-to-access-token?token=${token}&verifier=${verifier}`, authHeaders);
             this.setState({
                 waiting: false,
                 success: true,

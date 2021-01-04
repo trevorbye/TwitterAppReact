@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Collapse, NavLink } from 'reactstrap';
 import { Link } from 'react-router-dom';
+import { NAV_CSS } from '../config';
 
 export class NavMenu extends Component {
     constructor (props) {
@@ -9,6 +10,9 @@ export class NavMenu extends Component {
         this.state = {
             collapsed: true
         };
+        
+        // blue = production, green = dev
+        this.classNameNav = `navbar navbar-expand-md navbar-dark fixed-top ${NAV_CSS()}`;
     }
 
     toggleNavbar () {
@@ -19,7 +23,7 @@ export class NavMenu extends Component {
 
     render() {
         return (
-            <nav className="navbar navbar-expand-md navbar-dark fixed-top nav-background">
+            <nav className={this.classNameNav}>
                 <Link to="/">
                     <i className="fab fa-windows fa-2x twitter mr-1"></i>
                 </Link>

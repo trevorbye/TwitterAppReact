@@ -6,6 +6,7 @@ import { NavMenu } from './components/NavMenu';
 import { Login } from './components/Login';
 import { Home } from './components/Home';
 import { TweetQueue } from './components/TweetQueue';
+import { Tweet } from './components/Tweet';
 import { Account } from './components/Account';
 import { Info } from './components/Info';
 import { AccountRedirect } from './components/AccountRedirect';
@@ -66,6 +67,13 @@ export default class App extends Component {
                                 compose={false}
                                 key={"queue"}
                                 />}
+                            />
+                            <Route path='/tweet' render={() => <Tweet
+                                msalConfig={this.state.msalConfig}
+                                viewportHeight={this.state.viewportHeight}
+                                compose={false}
+                                key={"tweet"}
+                            />}
                             />
                             <Route path='/tweet-portal' render={() => <TweetQueue
                                 msalConfig={this.state.msalConfig}
