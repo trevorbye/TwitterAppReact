@@ -130,6 +130,7 @@ export class Account extends Component {
                     <div className="list-group">
                         {
                             this.state.handles.map((handle, idx) => <AccountPane 
+                                key={idx}
                                 handle={handle} 
                                 idx={idx}
                                 disableAutoTweets={(handle, idx) => this.disableAutoTweets(handle, idx)}
