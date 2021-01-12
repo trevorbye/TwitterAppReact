@@ -1,6 +1,66 @@
-﻿import React, { Component } from 'react';
+﻿import React, { Component, Link } from 'react';
+import { getTweetUrl } from '../utils/twitter-tweet-util';
 
 export class WebjobPostedBlock extends Component {
+
+    constructor(props) {
+        super(props);
+
+        this.openNewTabOnClick = this.openNewTabOnClick.bind(this);
+
+        this.state = {
+            tweetUrl: null,
+            linkEnabled: false
+        }
+    }
+
+    async componentDidMount() {
+        const tweetId = (this.props.tweet && this.props.tweet.TweetId && this.props.tweet.TweetId.length > 0)
+            ? this.props.tweet.TweetId
+            : null;
+        
+        const tweetUrl = (tweetId != null)
+            ? getTweetUrl(this.props.tweet)
+            : null;
+        
+        const linkEnabled = (this.props.tweet && this.props.tweet.TweetId && this.props.tweet.TweetId.length>0)
+            ? true
+            : false;
+
+        this.setState({
+            tweetUrl,
+            linkEnabled
+        });
+    }
+
+    openNewTabOnClick() {
+        window.open(this.state.tweetUrl, "_blank", 'noopener,noreferrer')
+    }
+
+    // If internal record has a value for external TweetId, 
+    // then convert icon to a link that opens a new tab using 
+    // the external twitter id
+    //
+    // Styling follows pattern of "Create Tweet" button on Compose
+    tweetIconWithLink() {
+
+        const buttonStyle = this.state.linkEnabled
+            ? { border: 0, padding: 0 }
+            : { border: 0, padding: 0, opacity: .65, cursor: 'not-allowed' };
+
+        return (
+
+            <button
+                id={`button`}
+                data-testid={`button`}
+                onClick={this.openNewTabOnClick}
+                disabled={!this.state.linkEnabled} style={buttonStyle}>
+                
+                <i className="fab fa-twitter-square fa-lg twitter" ></i>
+            </button>
+        )
+    }
+
     render() {
         if (this.props.tweet.IsPostedByWebJob && !this.props.editPaneExpanded) {
             if (this.props.canEdit) {
@@ -9,7 +69,7 @@ export class WebjobPostedBlock extends Component {
                         <span>
                             {
                                 this.props.tweet.RetweetNum === 0 ?
-                                    <i className="fab fa-twitter-square fa-lg twitter"></i> :
+                                    this.tweetIconWithLink() :
                                     <i className="fas fa-retweet fa-lg twitter"></i>
                             }
                         </span>
@@ -20,13 +80,11 @@ export class WebjobPostedBlock extends Component {
                 );
             } else {
                 return (
-                    <div className="mt-2">
-                        <i className="fab fa-twitter-square fa-lg twitter"></i>
-                    </div>
+                    this.tweetIconWithLink()
                 );
             }
         } else {
-            return null;
+            return (<></>);
         }
     }
 }
