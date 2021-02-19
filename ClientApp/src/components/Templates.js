@@ -79,21 +79,21 @@ export class Templates extends Component {
             <div className="templates">
                 <div>Templates for {this.state.twitterHandle}</div>
 
-                <button type="button" className="btn btn-success" onClick={() => this.showNewTemplateForm()}>New template</button>
-
                 {this.state.isLoading && this.loadingTemplateDiv()}
 
                 { !this.state.isLoading && this.state.list && this.state.list.length > 0 &&
-                    <div className="list-group">
+                <div className="list-group">
+                
                     <TemplatePane
-                        template={this.state.newTemplate}
-                        />
+                    template={this.state.newTemplate}
+                    />
                     {
-                        this.state.list.map((template, index) => <TemplatePane
-                            template={template}
-                            idx={index}
-                            canEdit={true}
-                        />)
+                    this.state.list.map((template, index) => <TemplatePane
+                        template={template}
+                        idx={index}
+                        key={index}
+                        canEdit={true}
+                    />)
                     }
                     </div>
                 }

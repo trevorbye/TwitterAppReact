@@ -1,6 +1,8 @@
 import React, { Component, Fragment } from 'react';
 import axios from 'axios';
 import { getAuthHeadersSilent } from '../auth-utils/auth-config';
+import { getTwitterHandlesByUser } from '../utils/database-utils';
+import { DDLTwitterHandleByUser } from '../utils/component-utils';
 
 const baseUrl = "http://localhost:52937/";
 
@@ -12,10 +14,18 @@ export class TemplateNew extends Component {
 
         this.state = {
             isValidTemplate: true,
-            template: {}
+            template: {},
+            globalHandles: [],
+            selectedHandle:""
         }
     }
-    componentDidMount() {
+    async componentDidMount() {
+        //const handles = getTwitterHandlesByUser();
+        
+        //this.setState({
+        //    globalHandles: handles,
+        //    selectedHandle: handles[0]
+        //});
     }
     templateDetailChange(e, name) {
 
@@ -55,6 +65,15 @@ export class TemplateNew extends Component {
         let res = await axios.post(addTemplate, template, authHeaders);
         console.log(JSON.stringify(res));
     }
+    async dropdownChange(event) {
+        event.persist();
+
+        this.setState({
+            selectedHandle: event.target.value,
+            publicHandleEvents: []
+        });
+    }
+    
     render() {
         return (
             <div data-testid="new-pane">
@@ -69,10 +88,11 @@ export class TemplateNew extends Component {
                         onChange={(e) => this.templateDetailChange(e, "title")}
                     />
                 </div>
+
                 <div className="input-group mb-3">
                     <div className="input-group-prepend">
                         <span className="input-group-text">
-                            Changed Threshold Percentage
+                            Changed Threshold Percentage (0-100)
                         </span>
                     </div>
                     <input id="template-changedThresholdPercentage" type="number" max="100" min="0" className="form-control"
@@ -83,7 +103,7 @@ export class TemplateNew extends Component {
                 <div className="input-group mb-3">
                     <div className="input-group-prepend">
                         <span className="input-group-text">
-                            Code Changes
+                            Code Changes (Y/N)
                         </span>
                     </div>
                     <input id="template-codeChanges" type="text" className="form-control"
@@ -94,7 +114,7 @@ export class TemplateNew extends Component {
                 <div className="input-group mb-3">
                     <div className="input-group-prepend">
                         <span className="input-group-text">
-                            External
+                            External (Y/N)
                         </span>
                     </div>
                     <input id="template-external" type="text" className="form-control"
@@ -105,7 +125,7 @@ export class TemplateNew extends Component {
                 <div className="input-group mb-3">
                     <div className="input-group-prepend">
                         <span className="input-group-text">
-                            New files
+                            New files (Y/N)
                         </span>
                     </div>
                     <input id="template-newFiles" type="text" className="form-control"
@@ -116,7 +136,7 @@ export class TemplateNew extends Component {
                 <div className="input-group mb-3">
                     <div className="input-group-prepend">
                         <span className="input-group-text">
-                            Ignore Metadata Only
+                            Ignore Metadata Only (Y/N)
                         </span>
                     </div>
                     <input id="template-ignoreMetadataOnly" type="text" className="form-control"
@@ -127,7 +147,7 @@ export class TemplateNew extends Component {
                 <div className="input-group mb-3">
                     <div className="input-group-prepend">
                         <span className="input-group-text">
-                            Channel
+                            Channel ()
                         </span>
                     </div>
                     <input id="template-channel" type="text" className="form-control"
@@ -138,7 +158,7 @@ export class TemplateNew extends Component {
                 <div className="input-group mb-3">
                     <div className="input-group-prepend">
                         <span className="input-group-text">
-                            MS Service
+                            MS.Service (app-service)
                         </span>
                     </div>
                     <input id="template-msServer" type="text" className="form-control"
@@ -149,7 +169,7 @@ export class TemplateNew extends Component {
                 <div className="input-group mb-3">
                     <div className="input-group-prepend">
                         <span className="input-group-text">
-                            Glob path
+                            Glob path (**/app-service or ms.service - only care about 1 file or path)
                         </span>
                     </div>
                     <input id="template-globPath" type="text" className="form-control"
@@ -160,7 +180,7 @@ export class TemplateNew extends Component {
                 <div className="input-group mb-3">
                     <div className="input-group-prepend">
                         <span className="input-group-text">
-                            Force Notify Tag
+                            Force Notify Tag (#notify - not meet threshold but is important)
                         </span>
                     </div>
                     <input id="template-forceNotifyTag" type="text" className="form-control"
@@ -171,7 +191,7 @@ export class TemplateNew extends Component {
                 <div className="input-group mb-3">
                     <div className="input-group-prepend">
                         <span className="input-group-text">
-                            QueryString
+                            QueryString (WT.mc_id=doc-feeds-initiative)
                         </span>
                     </div>
                     <input id="template-queryString" type="text" className="form-control"
@@ -182,7 +202,7 @@ export class TemplateNew extends Component {
                 <div className="input-group mb-3">
                     <div className="input-group-prepend">
                         <span className="input-group-text">
-                            RSS
+                            RSS (not relvant for twitter)
                         </span>
                     </div>
                     <input id="template-rss" type="text" className="form-control"
