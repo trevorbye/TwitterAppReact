@@ -15,6 +15,9 @@ export class TemplatePane extends Component {
             template: props.template
         }
     }
+    
+    
+    
 
     expandSettings() {
         this.setState({
@@ -50,14 +53,19 @@ export class TemplatePane extends Component {
 
                             {this.state.template && this.state.template.Id &&
                                 <TemplateBlock
-                                    canEdit={false}
-                                    template={this.state.template}
+                                canEdit={false}
+                                msalConfig={this.props.msalConfig}
+                                template={this.state.template}
+                                setList={this.props.setList}
                                 />
                             }
                             
                             {this.state.template && !this.state.template.Id &&
                                 <TemplateNew
+                                msalConfig={this.props.msalConfig}
                                 template={this.state.template}
+                                type="new"
+                                setList={this.props.setList}
                                 />
                             }
 
@@ -89,12 +97,20 @@ export class TemplatePane extends Component {
         } else {
             return (
                 <div className="list-group-item list-group-item-action flex-column align-items-start">
-                    <div className="d-flex w-100 justify-content-between align-items-center">
-                        <h5 className="my-auto handles">{this.props.template.TwitterHandle}</h5>
+                    <div className="d-flex w-100 justify-content-between align-items-left">
+                        <span><h5>{this.props.template.Title}</h5><nbsp></nbsp>
+                        { !this.props.type &&
+                                (this.props.template.MsServer
+                                ? `ms.service:${this.props.template.MsServer}`
+                                : `glob path:${this.props.template.GlobPath}`)
+                            }
+                           
+                        </span>
                         
                         {this.state.template.Id!=null && <button className="btn btn-primary my-auto" onClick={() => this.expandSettings()} data-testid="expand-account-settings">Settings&nbsp; <i className="fas fa-chevron-down"></i></button>}
                         
-                            {this.state.template.Id===null && <button className="btn btn-success my-auto" onClick={() => this.expandSettings()} data-testid="expand-account-settings">New &nbsp; <i className="fas fa-chevron-down"></i></button>}
+                        {this.state.template.Id === null && <button className="btn btn-success my-auto" onClick={() => this.expandSettings()} data-testid="expand-account-settings">New &nbsp; <i className="fas fa-chevron-down"></i></button>}
+
                     </div>
                 </div>
             );

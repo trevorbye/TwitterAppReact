@@ -3,71 +3,77 @@ import 'react-slidedown/lib/slidedown.css';
 import { getAuthHeadersSilent } from './auth-utils/auth-config';
 import axios from 'axios';
 import { TemplatePane } from './template-components/TemplatePane'
+import { getTemplatesByHandleByUser, saveTemplate } from './utils/database-utils'
 
 const baseUrl = "http://localhost:52937/";
 
 const listTemplates = baseUrl + "api/tweet-templates-by-handle";
 
+
+
+
 export class Templates extends Component {
     constructor(props) {
         super(props);
 
+        this.setList = this.handler.bind(this);
+        
         let twitterHandle = "";
 
         if (props && props.location && props.location.state && props.location.state.twitterHandle) {
             twitterHandle = props.location.state.twitterHandle;
         }
 
+        const newTemplate = {
+            Id: null,
+            TwitterHandle: twitterHandle, // posted with tweet handle 
+            TweetUser: "", // tweet creator
+            HandleUser: "", // tweet approver
+            Title: "Your new title",
+            ChangedThresholdPercentage: 70,
+            CodeChanges: 0,
+            External: 0,
+            NewFiles: 1,
+            IgnoreMetadataOnly: 1,
+            MsServer: "", // ms.service
+            GlobPath: "",
+            ForceNotifyTag: "#Notify",
+            QueryString: "WT.mc_id=YOUR-ID-HERE",
+            Rss: ""
+        };
+        
+        
         // props from Link in AccountPane
         this.state = {
+            msalConfig: props.msalConfig,
             twitterHandle: twitterHandle,
             isLoading: true,
             list: [],
-            newTemplate: {}
+            newTemplate: newTemplate
         }
 
     }
     async componentDidMount() {
-        
-        const list = await this.getListTemplates();
+        this.loadTemplates(this.state.msalConfig, this.state.twitterHandle)
+    }
+    
+    async loadTemplates(msalConfig, twitterHandle) {
+        const list = await getTemplatesByHandleByUser(msalConfig, twitterHandle);
+        this.setList(list);
+    }
+
+    async setList(list) {
+        console.log("template.js::setList");
         this.setState({
             list: list,
             isLoading: false,
-            newTemplate: {
-                Id: null,
-                TwitterHandle: this.state.twitterHandle,
-                TweetUser: "",
-                HandleUser: "",
-                ChangedThresholdPercentage: 100,
-                CodeChanges: 1,
-                External: 1, 
-                NewFiles: 1,
-                IgnoreMetadataOnly: 1,
-                Title: "",
-                Channel: "",
-                MsServer: "",
-                GlobPath: "",
-                ForceNotifyTag: "",
-                QueryString: "",
-                Rss:""
-            }
+            refresh: new Date()
         });
-
-
     }
-    async getListTemplates() {
-
-        let authHeaders = await getAuthHeadersSilent(this.props.msalConfig);
-        let res = await axios.get(listTemplates, authHeaders);
-
-        return res.data;
-
-    }
-
 
     loadingTemplateDiv() {
         return (
-            <div className="d-flex p-3 align-items-center border border-common rounded">
+            <div className="d-flex p-3 align-items-left border border-common rounded">
                 <strong>Loading templates...</strong>
                 <div className="spinner-border text-success ml-auto" role="status" aria-hidden="true"></div>
             </div>
@@ -85,14 +91,20 @@ export class Templates extends Component {
                 <div className="list-group">
                 
                     <TemplatePane
-                    template={this.state.newTemplate}
+                        msalConfig={this.props.msalConfig}
+                        template={this.state.newTemplate}
+                        type={'new'}
+                        setList={this.setList}
+                        refresh={new Date()}
                     />
                     {
-                    this.state.list.map((template, index) => <TemplatePane
+                        this.state.list.map((template, index) => <TemplatePane
+                        msalConfig={this.props.msalConfig}
                         template={template}
                         idx={index}
                         key={index}
-                        canEdit={true}
+                            canEdit={true}
+                            setList={this.setList}
                     />)
                     }
                     </div>

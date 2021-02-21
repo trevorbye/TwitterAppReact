@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import axios from 'axios';
 import { getAuthHeadersSilent } from '../auth-utils/auth-config';
-import { getTwitterHandlesByUser } from '../utils/database-utils';
+import { getTwitterHandlesByUser, saveTemplate } from '../utils/database-utils';
 import { DDLTwitterHandleByUser } from '../utils/component-utils';
 
 const baseUrl = "http://localhost:52937/";
@@ -14,18 +14,10 @@ export class TemplateNew extends Component {
 
         this.state = {
             isValidTemplate: true,
-            template: {},
-            globalHandles: [],
-            selectedHandle:""
+            template: props.template,
+            msalConfig: props.msalConfig,
+            setList: props.setList
         }
-    }
-    async componentDidMount() {
-        //const handles = getTwitterHandlesByUser();
-        
-        //this.setState({
-        //    globalHandles: handles,
-        //    selectedHandle: handles[0]
-        //});
     }
     templateDetailChange(e, name) {
 
@@ -36,34 +28,10 @@ export class TemplateNew extends Component {
             template: templateTemp
         });
     }
-    async templateFormSave() {
-        
-        const template = {
-            TwitterHandle: "@Tdfberry"
-        }
-        
-        const template1 = {
-            
-            TwitterHandle: "@Tdfberry",
-            TweetUser: "",
-            HandleUser:"",
-            ChangedThresholdPercentage: 90,
-            CodeChanges: 1,
-            External: 1,
-            NewFiles: 1,
-            IgnoreMetadataOnly: 1,
-            Title: "1",
-            Channel: "1",
-            MsServer: "1",
-            GlobPath: "1",
-            ForceNotifyTag: "1",
-            QueryString: "1",
-            Rss: "1"
-        }
-        
-        let authHeaders = await getAuthHeadersSilent(this.props.msalConfig);
-        let res = await axios.post(addTemplate, template, authHeaders);
-        console.log(JSON.stringify(res));
+    async onSubmit(e) {
+        e.preventDefault();
+        const newList = await saveTemplate(this.state.msalConfig, this.state.template);
+        this.state.setList(newList, true);
     }
     async dropdownChange(event) {
         event.persist();
@@ -74,9 +42,19 @@ export class TemplateNew extends Component {
         });
     }
     
+    async toggle(key, value) {
+        
+        const val = value === "true" ? 1 : 0;
+        
+        this.setState({
+            [key]: val
+        });
+    }
+    
     render() {
         return (
             <div data-testid="new-pane">
+                <form onSubmit={(e) => this.onSubmit(e)}>
                 <div className="input-group mb-3">
                     <div className="input-group-prepend">
                         <span className="input-group-text">
@@ -84,8 +62,8 @@ export class TemplateNew extends Component {
                         </span>
                     </div>
                     <input id="template-title" type="text" className="form-control"
-                        value={this.state.title}
-                        onChange={(e) => this.templateDetailChange(e, "title")}
+                        value={this.state.template.Title}
+                        onChange={(e) => this.templateDetailChange(e, "Title")}
                     />
                 </div>
 
@@ -96,8 +74,8 @@ export class TemplateNew extends Component {
                         </span>
                     </div>
                     <input id="template-changedThresholdPercentage" type="number" max="100" min="0" className="form-control"
-                        value={this.state.changedThresholdPercentage}
-                        onChange={(e) => this.templateDetailChange(e, "changedThresholdPercentage")}
+                        value={this.state.template.ChangedThresholdPercentage}
+                        onChange={(e) => this.templateDetailChange(e, "ChangedThresholdPercentage")}
                     />
                 </div>
                 <div className="input-group mb-3">
@@ -106,9 +84,9 @@ export class TemplateNew extends Component {
                             Code Changes (Y/N)
                         </span>
                     </div>
-                    <input id="template-codeChanges" type="text" className="form-control"
-                        value={this.state.codeChanges}
-                        onChange={(e) => this.templateDetailChange(e, "codeChanges")}
+                    <input id="template-codeChange" type="text" className="form-control"
+                        value={this.state.template.CodeChanges}
+                        onChange={(e) => this.templateDetailChange(e, "CodeChanges")}
                     />
                 </div>
                 <div className="input-group mb-3">
@@ -118,8 +96,8 @@ export class TemplateNew extends Component {
                         </span>
                     </div>
                     <input id="template-external" type="text" className="form-control"
-                        value={this.state.external}
-                        onChange={(e) => this.templateDetailChange(e, "external")}
+                        value={this.state.template.External}
+                        onChange={(e) => this.templateDetailChange(e, "External")}
                     />
                 </div>
                 <div className="input-group mb-3">
@@ -129,8 +107,8 @@ export class TemplateNew extends Component {
                         </span>
                     </div>
                     <input id="template-newFiles" type="text" className="form-control"
-                        value={this.state.newFiles}
-                        onChange={(e) => this.templateDetailChange(e, "newFiles")}
+                        value={this.state.template.NewFiles}
+                        onChange={(e) => this.templateDetailChange(e, "NewFiles")}
                     />
                 </div>
                 <div className="input-group mb-3">
@@ -140,8 +118,8 @@ export class TemplateNew extends Component {
                         </span>
                     </div>
                     <input id="template-ignoreMetadataOnly" type="text" className="form-control"
-                        value={this.state.ignoreMetadataOnly}
-                        onChange={(e) => this.templateDetailChange(e, "ignoreMetadataOnly")}
+                        value={this.state.template.IgnoreMetadataOnly}
+                        onChange={(e) => this.templateDetailChange(e, "IgnoreMetadataOnly")}
                     />
                 </div>
                 <div className="input-group mb-3">
@@ -151,8 +129,8 @@ export class TemplateNew extends Component {
                         </span>
                     </div>
                     <input id="template-channel" type="text" className="form-control"
-                        value={this.state.channel}
-                        onChange={(e) => this.templateDetailChange(e, "channel")}
+                        value={this.state.template.Channel}
+                        onChange={(e) => this.templateDetailChange(e, "Channel")}
                     />
                 </div>
                 <div className="input-group mb-3">
@@ -162,8 +140,8 @@ export class TemplateNew extends Component {
                         </span>
                     </div>
                     <input id="template-msServer" type="text" className="form-control"
-                        value={this.state.msServer}
-                        onChange={(e) => this.templateDetailChange(e, "msServer")}
+                        value={this.state.template.MsServer}
+                        onChange={(e) => this.templateDetailChange(e, "MsServer")}
                     />
                 </div>
                 <div className="input-group mb-3">
@@ -173,8 +151,8 @@ export class TemplateNew extends Component {
                         </span>
                     </div>
                     <input id="template-globPath" type="text" className="form-control"
-                        value={this.state.globPath}
-                        onChange={(e) => this.templateDetailChange(e, "globPath")}
+                        value={this.state.template.GlobPath}
+                        onChange={(e) => this.templateDetailChange(e, "GlobPath")}
                     />
                 </div>
                 <div className="input-group mb-3">
@@ -184,8 +162,8 @@ export class TemplateNew extends Component {
                         </span>
                     </div>
                     <input id="template-forceNotifyTag" type="text" className="form-control"
-                        value={this.state.forceNotifyTag}
-                        onChange={(e) => this.templateDetailChange(e, "forceNotifyTag")}
+                        value={this.state.template.ForceNotifyTag}
+                        onChange={(e) => this.templateDetailChange(e, "ForceNotifyTag")}
                     />
                 </div>
                 <div className="input-group mb-3">
@@ -195,8 +173,8 @@ export class TemplateNew extends Component {
                         </span>
                     </div>
                     <input id="template-queryString" type="text" className="form-control"
-                        value={this.state.queryString}
-                        onChange={(e) => this.templateDetailChange(e, "queryString")}
+                        value={this.state.template.QueryString}
+                        onChange={(e) => this.templateDetailChange(e, "QueryString")}
                     />
                 </div>
                 <div className="input-group mb-3">
@@ -206,18 +184,19 @@ export class TemplateNew extends Component {
                         </span>
                     </div>
                     <input id="template-rss" type="text" className="form-control"
-                        value={this.state.rss}
-                        onChange={(e) => this.templateDetailChange(e, "rss")}
+                        value={this.state.template.Rss}
+                        onChange={(e) => this.templateDetailChange(e, "Rss")}
                     />
                 </div>
                 <div className="d-flex w-100 justify-content-between">
                     <span>
                         <button
-                            type="button"
+                            type="submit"
 
-                            className="btn btn-primary btn-sm" onClick={() => this.saveTemplate(this.state)}>Save</button>
+                            className="btn btn-primary btn-sm">Save</button>
                     </span>
-                </div>
+                    </div>
+                    </form>
             </div>
         )
     }

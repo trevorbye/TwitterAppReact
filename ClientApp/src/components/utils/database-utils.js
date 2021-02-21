@@ -10,3 +10,19 @@ export const getTwitterHandlesByUser = async (props)=>{
     handles.data.unshift("");
     return handles;
 }
+
+export const getTemplatesByHandleByUser = async (msalConfig, twitterHandle) => {
+    const authHeaders = await getAuthHeadersSilent(msalConfig);
+    
+    const templates = await axios.get(baseUrl + `api/tweet-templates-by-handle?twitterHandle=${twitterHandle}`, authHeaders);
+    return templates.data;
+}
+
+export const saveTemplate = async (msalConfig, template) => {
+    const authHeaders = await getAuthHeadersSilent(msalConfig);
+    const savedTemplate = await axios.post(baseUrl + `api/tweet-template`, template, authHeaders);
+    
+    const newList = await getTemplatesByHandleByUser(msalConfig, template.TwitterHandle);
+    
+    return newList;
+}

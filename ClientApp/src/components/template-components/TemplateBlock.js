@@ -37,7 +37,7 @@ export class TemplateBlock extends Component {
         return (
             <div className="list-group-item list-group-item-action flex-column align-items-start">
                 <div className="d-flex w-100 justify-content-between align-items-center">
-                    <h5 className="my-auto handles">{this.props.template.TwitterHandle}</h5>
+                    <h5 className="my-auto handles">{this.props.template.Title}</h5>
                     <button className="btn btn-primary my-auto" onClick={() => this.expandSettings()} data-testid="expand-template-settings">
                         Settings &nbsp; <i className="fas fa-chevron-down"></i>
                     </button>

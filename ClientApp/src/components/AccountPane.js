@@ -128,6 +128,7 @@ export class AccountPane extends Component {
                                         Templates are used to autogenerate tweets into this system. Autogen tweets still require approval.
                                     </Tooltip>
                                     <Link
+                                        id={`template-handle-button-${this.props.handle.TwitterHandle}`}
                                         handle={this.props.handle.TwitterHandle} type="button" className="btn btn-info"
                                         role="button"
                                         to={{
