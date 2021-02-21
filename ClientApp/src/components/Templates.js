@@ -1,9 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import 'react-slidedown/lib/slidedown.css';
-import { getAuthHeadersSilent } from './auth-utils/auth-config';
-import axios from 'axios';
 import { TemplatePane } from './template-components/TemplatePane'
-import { getTemplatesByHandleByUser, saveTemplate } from './utils/database-utils'
+import { getTemplatesByHandleByUser } from './utils/database-utils'
 
 const baseUrl = "http://localhost:52937/";
 
@@ -83,29 +81,31 @@ export class Templates extends Component {
     render() {
         return (
             <div className="templates">
-                <div>Templates for {this.state.twitterHandle}</div>
+                <h4>Templates for {this.state.twitterHandle}</h4>
 
                 {this.state.isLoading && this.loadingTemplateDiv()}
 
-                { !this.state.isLoading && this.state.list && this.state.list.length > 0 &&
+                { !this.state.isLoading  &&
                 <div className="list-group">
                 
                     <TemplatePane
                         msalConfig={this.props.msalConfig}
                         template={this.state.newTemplate}
-                        type={'new'}
+                        type='new'
                         setList={this.setList}
                         refresh={new Date()}
                     />
-                    {
+                    { this.state.list && this.state.list.length > 0 ? 
                         this.state.list.map((template, index) => <TemplatePane
+                            type='edit'
                         msalConfig={this.props.msalConfig}
                         template={template}
                         idx={index}
                         key={index}
                             canEdit={true}
                             setList={this.setList}
-                    />)
+                        />)
+                        : <span></span>
                     }
                     </div>
                 }

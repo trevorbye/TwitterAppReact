@@ -55,7 +55,7 @@ export class TemplateNew extends Component {
     
     render() {
         return (
-            <div data-testid="new-pane">
+            <div data-testid="template-new">
                 <form onSubmit={(e) => this.onSubmit(e)}>
                 <div className="input-group mb-3">
                     <div className="input-group-prepend">

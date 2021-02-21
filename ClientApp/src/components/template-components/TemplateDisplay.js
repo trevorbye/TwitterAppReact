@@ -3,7 +3,7 @@ import { localeStatusTime } from '../utils/time-util';
 import axios from 'axios';
 
 
-export class TemplateBlock extends Component {
+export class TemplateDisplay extends Component {
     constructor(props) {
         super(props);
 
@@ -49,12 +49,12 @@ export class TemplateBlock extends Component {
     render() {
         return (
             <div className="list-group-item list-group-item-action flex-column align-items-start">
-
+                { this.state.type=="edit" && 
                 <div className="d-flex w-100 justify-content-between align-items-center">
                     <h5 className="handles">{this.state.template.Title}</h5>
                     <small>{this.state.createdPretty}</small>
                 </div>
-
+                }
             </div>
         )
     }
