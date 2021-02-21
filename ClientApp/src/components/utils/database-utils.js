@@ -47,3 +47,15 @@ export const updateTemplate = async (msalConfig, template) => {
     
     return updatedList;
 }
+
+export const deleteTemplate = async (msalConfig, Id, TwitterHandle) => {
+    const authHeaders = await getAuthHeadersSilent(msalConfig);
+    
+    // delete
+    await axios.delete(baseUrl + `api/tweet-template?Id=${Id}`, authHeaders);
+    
+    // get updated list
+    const updatedList = await getTemplatesByHandleByUser(msalConfig, TwitterHandle);
+    
+    return updatedList;
+}

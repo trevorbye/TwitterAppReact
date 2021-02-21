@@ -14,6 +14,7 @@ export class TemplateItem extends Component {
         super(props);
 
         this.state = {
+            isDirty: false,
             isValidTemplate: true,
             template: props.template,
             formDisabled: props.displayType == DISPLAY_TYPE_ENUM.DISPLAY ? true : false
@@ -25,12 +26,18 @@ export class TemplateItem extends Component {
         templateTemp[name] = e.target.value;
 
         this.setState({
-            template: templateTemp
+            template: templateTemp,
+            isDirty: true
         });
     }
     async onSubmit(e) {
         e.preventDefault();
         this.props.saveTemplate(this.props.msalConfig, this.state.template)
+        this.props.collapseRow();
+    }
+    async onDelete(e) {
+        e.preventDefault();
+        this.props.deleteTemplate(this.props.msalConfig, this.props.template.Id, this.props.template.TwitterHandle)
         this.props.collapseRow();
     }
 
@@ -57,11 +64,24 @@ export class TemplateItem extends Component {
             <>
                 <span className="save-button">
                     <button
+                        disabled={this.state.isDirty ? false : true}
                         type="submit"
                         className="btn btn-primary btn-sm">Save</button>
                 </span>
 
             </>
+        )
+    }
+    renderDeleteButton() {
+        return (
+            <span className="delete-button">
+                <button
+                    type="button"
+                    className="btn btn-danger my-auto template-delete"
+                    onClick={(e) => this.onDelete(e)} data-testid="template-del-btn">
+                    Delete &nbsp; <i className="fas fa-trash-alt"></i>
+                </button>
+            </span>
         )
     }
     renderCancelButton() {
@@ -212,8 +232,13 @@ export class TemplateItem extends Component {
                                 onChange={(e) => this.templateDetailChange(e, "Rss")}
                             />
                         </div>
-                        <div className="d-flex w-100 justify-content-between">
+                        <div className="d-flex w-100 justify-content-between align-items-right">
+                            
                             {(this.props.displayType == DISPLAY_TYPE_ENUM.EDIT || this.props.displayType == DISPLAY_TYPE_ENUM.NEW) && this.renderSaveButton()}
+                            
+                            {this.props.displayType == DISPLAY_TYPE_ENUM.EDIT &&
+                                this.renderDeleteButton()}
+                            
                             {this.renderCancelButton()}
                         </div>
                     </fieldset>

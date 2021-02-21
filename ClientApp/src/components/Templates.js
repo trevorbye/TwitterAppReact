@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import 'react-slidedown/lib/slidedown.css';
 import { TemplatePane } from './template-components/TemplatePane'
-import { getTemplatesByHandleByUser, saveTemplate, updateTemplate } from './utils/database-utils'
+import { getTemplatesByHandleByUser, saveTemplate, updateTemplate, deleteTemplate } from './utils/database-utils'
 import { DISPLAY_TYPE_ENUM } from './utils/enums'
 
 const baseUrl = "http://localhost:52937/";
@@ -17,6 +17,7 @@ export class Templates extends Component {
 
         this.setList = this.setList.bind(this);
         this.saveTemplate = this.saveTemplate.bind(this);
+        this.deleteTemplate = this.deleteTemplate.bind(this);
         
         let twitterHandle = "";
 
@@ -31,6 +32,7 @@ export class Templates extends Component {
             HandleUser: "", // tweet approver
             Title: "Your new title",
             ChangedThresholdPercentage: 70,
+            Channel: "", 
             CodeChanges: 0,
             External: 0,
             NewFiles: 1,
@@ -74,6 +76,17 @@ export class Templates extends Component {
         });
     }
     
+    // delete
+    async deleteTemplate(msalConfig, id, twitterHandle) {
+        const updatedList = await deleteTemplate(msalConfig, id, twitterHandle);
+        
+        this.setState({
+            list: updatedList,
+            isLoading: false,
+            refresh: new Date()
+        });
+    }
+    
     async loadTemplates(msalConfig, twitterHandle) {
         const list = await getTemplatesByHandleByUser(msalConfig, twitterHandle);
         this.setList(list);
@@ -112,19 +125,23 @@ export class Templates extends Component {
                         template={this.state.newTemplate}
                         displayType={DISPLAY_TYPE_ENUM.NEW}
                         setList={this.setList}
-                        saveTemplate={this.saveTemplate}
                         refresh={new Date()}
+                        saveTemplate={this.saveTemplate}
+                        deleteTemplate={null}
+                        
                     />
                     { this.state.list && this.state.list.length > 0 ? 
                         this.state.list.map((template, index) => <TemplatePane
                         displayType={DISPLAY_TYPE_ENUM.EDIT}
                         msalConfig={this.props.msalConfig}
                             template={template}
-                        saveTemplate={this.saveTemplate}
+                        
                         idx={index}
                         key={index}
                             canEdit={true}
                             setList={this.setList}
+                            deleteTemplate={this.deleteTemplate}
+                            saveTemplate={this.saveTemplate}
                         />)
                         : <span></span>
                     }

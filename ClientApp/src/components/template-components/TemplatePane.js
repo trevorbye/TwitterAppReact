@@ -5,6 +5,8 @@ import { TemplateDisplay } from './TemplateDisplay.js.old';
 import { TemplateItem } from './TemplateItem';
 import { DISPLAY_TYPE_ENUM } from '../utils/enums'
 
+import { getHumanReadableTime, localeStatusTime } from '../utils/time-util';
+
 export class TemplatePane extends Component {
     constructor(props) {
         super(props);
@@ -52,7 +54,8 @@ export class TemplatePane extends Component {
                         <TemplateItem
                         msalConfig={this.props.msalConfig}
                         template={this.state.template}
-                        saveTemplate={this.props.saveTemplate}
+                            saveTemplate={this.props.saveTemplate}
+                            deleteTemplate={this.props.deleteTemplate}
                         displayType={this.props.displayType}
                         collapseRow={() => this.collapseRow()}
                         />
@@ -105,11 +108,12 @@ export class TemplatePane extends Component {
 
     renderRowTextCollapsed() {
         if (this.props.displayType == DISPLAY_TYPE_ENUM.EDIT) {
-            return (<span className="collapsed" ><h5>{this.props.template.Title}</h5><nbsp></nbsp>
-                {this.props.template.MsServer
-                    ? `ms.service:${this.props.template.MsServer}`
-                    : `glob path:${this.props.template.GlobPath}`}
-
+            return (<span className="collapsed" ><h5>{this.props.template.Title}</h5>
+                <div>{this.props.template.MsServer
+                    ? `ms.service: ${this.props.template.MsServer}`
+                    : this.props.template.GlobPath ? `glob path: ${this.props.template.GlobPath}` : ""}
+                    <div>{localeStatusTime(this.props.template.Modified)}</div>
+                </div>
             </span>)
 
         } else {
@@ -133,7 +137,6 @@ export class TemplatePane extends Component {
     render() {
         return (
             <div className="templatePane-debug">
-                <div>{JSON.stringify(this.props.displayType)}</div>
                 { this.state.settingsExpanded
                     ? this.renderExpanded()
                     : this.renderCollapsed()
