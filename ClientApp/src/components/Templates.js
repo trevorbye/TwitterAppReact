@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import 'react-slidedown/lib/slidedown.css';
 import { TemplatePane } from './template-components/TemplatePane'
 import { getTemplatesByHandleByUser } from './utils/database-utils'
+import { DISPLAY_TYPE_ENUM } from './utils/enums'
 
 const baseUrl = "http://localhost:52937/";
 
@@ -86,18 +87,18 @@ export class Templates extends Component {
                 {this.state.isLoading && this.loadingTemplateDiv()}
 
                 { !this.state.isLoading  &&
-                <div className="list-group">
+                <div className="list-group templates">
                 
                     <TemplatePane
                         msalConfig={this.props.msalConfig}
                         template={this.state.newTemplate}
-                        type='new'
+                        displayType={DISPLAY_TYPE_ENUM.NEW}
                         setList={this.setList}
                         refresh={new Date()}
                     />
                     { this.state.list && this.state.list.length > 0 ? 
                         this.state.list.map((template, index) => <TemplatePane
-                            type='edit'
+                        displayType={DISPLAY_TYPE_ENUM.EDIT}
                         msalConfig={this.props.msalConfig}
                         template={template}
                         idx={index}
@@ -109,10 +110,7 @@ export class Templates extends Component {
                     }
                     </div>
                 }
-
             </div>
-
-
         )
     }
 }

@@ -16,8 +16,7 @@ export class TemplateNew extends Component {
             isValidTemplate: true,
             template: props.template,
             msalConfig: props.msalConfig,
-            setList: props.setList,
-            collapse: props.collapse
+            setList: props.setList
         }
     }
     templateDetailChange(e, name) {
@@ -33,8 +32,13 @@ export class TemplateNew extends Component {
         e.preventDefault();
         const newList = await saveTemplate(this.state.msalConfig, this.state.template);
         this.state.setList(newList, true);
-        this.state.collapse();
+        this.props.collapseRow();
     }
+    
+    collapseRow() {
+        this.props.collapseRow();
+    }
+    
     async dropdownChange(event) {
         event.persist();
 
@@ -196,7 +200,10 @@ export class TemplateNew extends Component {
                             type="submit"
 
                             className="btn btn-primary btn-sm">Save</button>
-                    </span>
+                        </span>
+                        <span>
+                                <i className="fas fa-compress fa-lg" data-testid="collapse-edit-btn" onClick={() => this.collapseRow()}></i>
+                            </span>
                     </div>
                     </form>
             </div>
