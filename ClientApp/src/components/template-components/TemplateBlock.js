@@ -12,7 +12,8 @@ export class TemplateBlock extends Component {
             isValidTemplate: true,
             onSave: props.templateFormSave,
             template: props.template,
-            createdPretty: ""
+            createdPretty: "",
+            settingsExpanded: false
         }
     }
     async componentDidMount() {

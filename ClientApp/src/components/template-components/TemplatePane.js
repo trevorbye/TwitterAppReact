@@ -9,10 +9,12 @@ export class TemplatePane extends Component {
     constructor(props) {
         super(props);
 
+        this.hideSettings = this.hideSettings.bind(this);
+        
         this.state = {
             settingsExpanded: false,
             deleteModalOpen: false,
-            template: props.template
+            template: props.template,
         }
     }
     
@@ -66,6 +68,7 @@ export class TemplatePane extends Component {
                                 template={this.state.template}
                                 type="new"
                                 setList={this.props.setList}
+                                collapse={this.hideSettings}
                                 />
                             }
 

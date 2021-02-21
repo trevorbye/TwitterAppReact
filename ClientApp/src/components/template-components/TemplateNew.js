@@ -16,7 +16,8 @@ export class TemplateNew extends Component {
             isValidTemplate: true,
             template: props.template,
             msalConfig: props.msalConfig,
-            setList: props.setList
+            setList: props.setList,
+            collapse: props.collapse
         }
     }
     templateDetailChange(e, name) {
@@ -32,6 +33,7 @@ export class TemplateNew extends Component {
         e.preventDefault();
         const newList = await saveTemplate(this.state.msalConfig, this.state.template);
         this.state.setList(newList, true);
+        this.state.collapse();
     }
     async dropdownChange(event) {
         event.persist();

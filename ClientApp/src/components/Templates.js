@@ -16,7 +16,7 @@ export class Templates extends Component {
     constructor(props) {
         super(props);
 
-        this.setList = this.handler.bind(this);
+        this.setList = this.setList.bind(this);
         
         let twitterHandle = "";
 
