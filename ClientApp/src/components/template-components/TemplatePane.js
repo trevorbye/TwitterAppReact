@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Tooltip, Modal, ModalHeader, ModalFooter, ModalBody } from 'reactstrap';
 import { SlideDown } from 'react-slidedown';
-import { TemplateDisplay } from './TemplateDisplay';
-import { TemplateNew } from './TemplateNew';
+import { TemplateDisplay } from './TemplateDisplay.js.old';
+import { TemplateItem } from './TemplateItem';
 import { DISPLAY_TYPE_ENUM } from '../utils/enums'
 
 export class TemplatePane extends Component {
@@ -18,7 +18,7 @@ export class TemplatePane extends Component {
         }
     }
 
-    expandSettings() {
+    expandRow() {
         this.setState({
             settingsExpanded: true
         });
@@ -49,32 +49,18 @@ export class TemplatePane extends Component {
                 <div className="list-group-item list-group-item-action flex-column align-items-start expanded">
                     <div className="settings-pane mt-3 expanded">
 
-                        {this.props.displayType == DISPLAY_TYPE_ENUM.EDIT &&
-                            
-                            <TemplateDisplay
-                            canEdit={false}
-                            msalConfig={this.props.msalConfig}
-                            template={this.state.template}
-                            setList={this.props.setList}
-                            displayType={this.props.displayType}
-                            />
-                        }
-
-                        {this.props.displayType  == DISPLAY_TYPE_ENUM.NEW &&
-                            <TemplateNew
-                                msalConfig={this.props.msalConfig}
-                                template={this.state.template}
-                                displayType={this.props.displayType}
-                                setList={this.props.setList}
-                                collapseRow={() => this.collapseRow()}
-                            />
-                        }
-
+                        <TemplateItem
+                        msalConfig={this.props.msalConfig}
+                        template={this.state.template}
+                        saveTemplate={this.props.saveTemplate}
+                        displayType={this.props.displayType}
+                        collapseRow={() => this.collapseRow()}
+                        />
 
                         <div className="card-footer">
                             <div className="d-flex justify-content-end collapse">
-                                { this.state.displayType == DISPLAY_TYPE_ENUM.EDIT &&
-                                    <button className="btn btn-secondary" onClick={() => this.hideSettings()}>
+                                { this.state.displayType == DISPLAY_TYPE_ENUM.NOOP &&
+                                    <button className="btn btn-secondary" onClick={() => this.collapseRow()}>
                                         Done &nbsp; <i className="fas fa-chevron-up"></i>
                                     </button>
                                 }
@@ -99,16 +85,16 @@ export class TemplatePane extends Component {
         );
     }
 
-    renderButtonToExpandRow() {
+    renderRowButtonsCollapsed() {
 
         if (this.props.displayType == DISPLAY_TYPE_ENUM.EDIT) {
             // edit pane
             return (
-                <button className="btn btn-primary my-auto collapsed" onClick={() => this.expandSettings()} data-testid="expand-account-settings">Settings&nbsp; <i className="fas fa-chevron-down"></i></button>)
+                <button className="btn btn-primary my-auto collapsed" onClick={() => this.expandRow()} data-testid="expand-account-settings">Settings&nbsp; <i className="fas fa-chevron-down"></i></button>)
         } else if (this.props.displayType == DISPLAY_TYPE_ENUM.NEW){
             // new 
             return (
-                <button className="btn btn-success my-auto collapsed" onClick={() => this.expandSettings()} data-testid="expand-account-settings">New &nbsp; <i className="fas fa-chevron-down"></i></button>)
+                <button className="btn btn-success my-auto collapsed" onClick={() => this.expandRow()} data-testid="expand-account-settings">New &nbsp; <i className="fas fa-chevron-down"></i></button>)
         } else {
             // display pane 
             return (
@@ -137,7 +123,7 @@ export class TemplatePane extends Component {
             <div className="list-group-item list-group-item-action flex-column align-items-start collapsed">
                 <div className="d-flex w-100 justify-content-between align-items-left collapsed">
                     {this.renderRowTextCollapsed()}
-                    {this.renderButtonToExpandRow()}
+                    {this.renderRowButtonsCollapsed()}
 
                 </div>
             </div>
@@ -145,10 +131,14 @@ export class TemplatePane extends Component {
     }
 
     render() {
-        if (this.state.settingsExpanded) {
-            return this.renderExpanded();
-        } else {
-            return this.renderCollapsed();
-        }
+        return (
+            <div className="templatePane-debug">
+                <div>{JSON.stringify(this.props.displayType)}</div>
+                { this.state.settingsExpanded
+                    ? this.renderExpanded()
+                    : this.renderCollapsed()
+                }
+            </div>
+        )
     }
 }

@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import 'react-slidedown/lib/slidedown.css';
 import { TemplatePane } from './template-components/TemplatePane'
-import { getTemplatesByHandleByUser } from './utils/database-utils'
+import { getTemplatesByHandleByUser, saveTemplate, updateTemplate } from './utils/database-utils'
 import { DISPLAY_TYPE_ENUM } from './utils/enums'
 
 const baseUrl = "http://localhost:52937/";
@@ -16,6 +16,7 @@ export class Templates extends Component {
         super(props);
 
         this.setList = this.setList.bind(this);
+        this.saveTemplate = this.saveTemplate.bind(this);
         
         let twitterHandle = "";
 
@@ -56,6 +57,23 @@ export class Templates extends Component {
         this.loadTemplates(this.state.msalConfig, this.state.twitterHandle)
     }
     
+    // new and update
+    async saveTemplate(msalConfig, template) {
+        
+        let newList = [];
+        
+        if (template.Id != null) {
+            newList = await updateTemplate(msalConfig, template);
+        } else {
+            newList = await saveTemplate(msalConfig, template);
+        }
+        this.setState({
+            list: newList,
+            isLoading: false,
+            refresh: new Date()
+        });
+    }
+    
     async loadTemplates(msalConfig, twitterHandle) {
         const list = await getTemplatesByHandleByUser(msalConfig, twitterHandle);
         this.setList(list);
@@ -69,7 +87,7 @@ export class Templates extends Component {
             refresh: new Date()
         });
     }
-
+    
     loadingTemplateDiv() {
         return (
             <div className="d-flex p-3 align-items-left border border-common rounded">
@@ -94,13 +112,15 @@ export class Templates extends Component {
                         template={this.state.newTemplate}
                         displayType={DISPLAY_TYPE_ENUM.NEW}
                         setList={this.setList}
+                        saveTemplate={this.saveTemplate}
                         refresh={new Date()}
                     />
                     { this.state.list && this.state.list.length > 0 ? 
                         this.state.list.map((template, index) => <TemplatePane
                         displayType={DISPLAY_TYPE_ENUM.EDIT}
                         msalConfig={this.props.msalConfig}
-                        template={template}
+                            template={template}
+                        saveTemplate={this.saveTemplate}
                         idx={index}
                         key={index}
                             canEdit={true}

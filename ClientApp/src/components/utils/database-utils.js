@@ -20,9 +20,30 @@ export const getTemplatesByHandleByUser = async (msalConfig, twitterHandle) => {
 
 export const saveTemplate = async (msalConfig, template) => {
     const authHeaders = await getAuthHeadersSilent(msalConfig);
+    
+    // do not pass in HandleUser or TweetUser
+    // these are set/overwritter by backend
+    
+    // new 
     const savedTemplate = await axios.post(baseUrl + `api/tweet-template`, template, authHeaders);
     
-    const newList = await getTemplatesByHandleByUser(msalConfig, template.TwitterHandle);
+    // get updated list
+    const updatedList = await getTemplatesByHandleByUser(msalConfig, template.TwitterHandle);
     
-    return newList;
+    return updatedList;
+}
+
+export const updateTemplate = async (msalConfig, template) => {
+    const authHeaders = await getAuthHeadersSilent(msalConfig);
+    
+    // do not pass in HandleUser or TweetUser
+    // these are set/overwritten by backend
+    
+    // update
+    const updatedTemplate = await axios.patch(baseUrl + `api/tweet-template`, template, authHeaders);
+    
+    // get updated list
+    const updatedList = await getTemplatesByHandleByUser(msalConfig, template.TwitterHandle);
+    
+    return updatedList;
 }
