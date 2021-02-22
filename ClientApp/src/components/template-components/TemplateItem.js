@@ -110,17 +110,6 @@ export class TemplateItem extends Component {
                         <div className="input-group mb-3">
                             <div className="input-group-prepend">
                                 <span className="input-group-text">
-                                    Changed Threshold Percentage (0-100)
-                        </span>
-                            </div>
-                            <input id="template-changedThresholdPercentage" type="number" max="100" min="0" className="form-control"
-                                value={this.state.template.ChangedThresholdPercentage}
-                                onChange={(e) => this.templateDetailChange(e, "ChangedThresholdPercentage")}
-                            />
-                        </div>
-                        <div className="input-group mb-3">
-                            <div className="input-group-prepend">
-                                <span className="input-group-text">
                                     Code Changes (Y/N)
                         </span>
                             </div>
@@ -171,11 +160,23 @@ export class TemplateItem extends Component {
                                 onChange={(e) => this.setDetailState("IgnoreMetadataOnly", this.state.template.IgnoreMetadataOnly === 1 ? 0 : 1)}
                             />
                         </div>
+                        
+                        <div className="input-group mb-3">
+                            <div className="input-group-prepend">
+                                <span className="input-group-text">
+                                    Changed Threshold Percentage (0-100)
+                        </span>
+                            </div>
+                            <input id="template-changedThresholdPercentage" type="number" max="100" min="0" className="form-control"
+                                value={this.state.template.ChangedThresholdPercentage}
+                                onChange={(e) => this.templateDetailChange(e, "ChangedThresholdPercentage")}
+                            />
+                        </div>
                         <div className="input-group mb-3">
                             <div className="input-group-prepend">
                                 <span className="input-group-text">
                                     Channel ()
-                        </span>
+                                </span>
                             </div>
                             <input id="template-channel" type="text" className="form-control"
                                 value={this.state.template.Channel}
@@ -185,24 +186,25 @@ export class TemplateItem extends Component {
                         <div className="input-group mb-3">
                             <div className="input-group-prepend">
                                 <span className="input-group-text">
-                                    MS.Service (app-service)
-                        </span>
+                                    Search for
+                                </span>
                             </div>
-                            <input id="template-msServer" type="text" className="form-control"
+                            <div>
+                                <input id="template-msServer" type="radio" className="form-control"
                                 value={this.state.template.MsServer}
                                 onChange={(e) => this.templateDetailChange(e, "MsServer")}
-                            />
-                        </div>
-                        <div className="input-group mb-3">
-                            <div className="input-group-prepend">
-                                <span className="input-group-text">
-                                    Glob path (**/app-service or ms.service - only care about 1 file or path)
-                        </span>
-                            </div>
-                            <input id="template-globPath" type="text" className="form-control"
+                                />
+                                <input id="template-msServer" type="radio" className="form-control"
                                 value={this.state.template.GlobPath}
                                 onChange={(e) => this.templateDetailChange(e, "GlobPath")}
-                            />
+                                />
+                                <input id="template-service-path" type="text" className="form-control"
+                                value={this.state.template.searchType === 'service'? this.state.templage.MsService : this.state.template.GlobPath}
+                                onChange={(e) => this.templateDetailChange(e, "GlobPath")}
+                                />
+                            </div>
+                                
+                            
                         </div>
                         <div className="input-group mb-3">
                             <div className="input-group-prepend">
