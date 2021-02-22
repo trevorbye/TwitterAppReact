@@ -16,10 +16,13 @@ export class TemplatePane extends Component {
         this.state = {
             settingsExpanded: false,
             deleteModalOpen: false,
-            template: props.template,
+            refresh: props.refresh,
+            name: "templatePane",
         }
     }
-
+    async componentDidMount() {
+        console.log("TemplatePane componentDidMount " + new Date())
+    }
     expandRow() {
         this.setState({
             settingsExpanded: true
@@ -52,10 +55,11 @@ export class TemplatePane extends Component {
                     <div className="settings-pane mt-3 expanded">
 
                         <TemplateItem
+                        refresh={this.props.refresh}
                         msalConfig={this.props.msalConfig}
-                        template={this.state.template}
-                            saveTemplate={this.props.saveTemplate}
-                            deleteTemplate={this.props.deleteTemplate}
+                        template={this.props.template}
+                        saveTemplate={this.props.saveTemplate}
+                        deleteTemplate={this.props.deleteTemplate}
                         displayType={this.props.displayType}
                         collapseRow={() => this.collapseRow()}
                         />

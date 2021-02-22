@@ -47,6 +47,7 @@ export class Templates extends Component {
         
         // props from Link in AccountPane
         this.state = {
+            name: "template",
             msalConfig: props.msalConfig,
             twitterHandle: twitterHandle,
             isLoading: true,
@@ -57,6 +58,7 @@ export class Templates extends Component {
     }
     async componentDidMount() {
         this.loadTemplates(this.state.msalConfig, this.state.twitterHandle)
+        console.log("Template componentDidMount " + new Date())
     }
     
     // new and update
@@ -69,22 +71,13 @@ export class Templates extends Component {
         } else {
             newList = await saveTemplate(msalConfig, template);
         }
-        this.setState({
-            list: newList,
-            isLoading: false,
-            refresh: new Date()
-        });
+        this.setList(newList);
     }
     
     // delete
     async deleteTemplate(msalConfig, id, twitterHandle) {
         const updatedList = await deleteTemplate(msalConfig, id, twitterHandle);
-        
-        this.setState({
-            list: updatedList,
-            isLoading: false,
-            refresh: new Date()
-        });
+        this.setList(updatedList);
     }
     
     async loadTemplates(msalConfig, twitterHandle) {
@@ -125,7 +118,7 @@ export class Templates extends Component {
                         template={this.state.newTemplate}
                         displayType={DISPLAY_TYPE_ENUM.NEW}
                         setList={this.setList}
-                        refresh={new Date()}
+                        refresh={this.state.refresh}
                         saveTemplate={this.saveTemplate}
                         deleteTemplate={null}
                         

@@ -1,8 +1,4 @@
 import React, { Component, Fragment } from 'react';
-import axios from 'axios';
-import { getAuthHeadersSilent } from '../auth-utils/auth-config';
-import { getTwitterHandlesByUser, saveTemplate } from '../utils/database-utils';
-import { DDLTwitterHandleByUser } from '../utils/component-utils';
 import { DISPLAY_TYPE_ENUM } from '../utils/enums'
 
 const baseUrl = "http://localhost:52937/";
@@ -17,18 +13,13 @@ export class TemplateItem extends Component {
             isDirty: false,
             isValidTemplate: true,
             template: props.template,
-            formDisabled: props.displayType == DISPLAY_TYPE_ENUM.DISPLAY ? true : false
+            formDisabled: props.displayType == DISPLAY_TYPE_ENUM.DISPLAY ? true : false,
+            name: "templateItem",
+            refresh: props.refresh
         }
     }
-    templateDetailChange(e, name) {
-
-        const templateTemp = Object.assign({}, this.state.template)
-        templateTemp[name] = e.target.value;
-
-        this.setState({
-            template: templateTemp,
-            isDirty: true
-        });
+    async componentDidMount() {
+        console.log("TemplateItem componentDidMount " + new Date())
     }
     async onSubmit(e) {
         e.preventDefault();
@@ -49,13 +40,17 @@ export class TemplateItem extends Component {
             publicHandleEvents: []
         });
     }
+    templateDetailChange(e, name) {
 
-    async toggle(key, value) {
-
-        const val = value === "true" ? 1 : 0;
-
+        this.setDetailState(name, e.target.value)
+    }
+    setDetailState(name, value) {
+        const templateTemp = Object.assign({}, this.state.template)
+        templateTemp[name] = value;
+        
         this.setState({
-            [key]: val
+            template: templateTemp,
+            isDirty: true
         });
     }
 
@@ -97,6 +92,7 @@ export class TemplateItem extends Component {
     render() {
         return (
             <div data-testid="template-new">
+                
                 <form onSubmit={(e) => this.onSubmit(e)}>
                     <fieldset disabled={this.state.formDisabled} style={this.state.formDisabled ? { pointerEvents: "none", opacity: "0.4"} : {}}>
                         <div className="input-group mb-3">
@@ -128,10 +124,13 @@ export class TemplateItem extends Component {
                                     Code Changes (Y/N)
                         </span>
                             </div>
-                            <input id="template-codeChange" type="text" className="form-control"
+                            <input id="template-codeChange" type="checkbox" className="template-input checkbox"
+                                aria-label="Enable Code Changes"
                                 value={this.state.template.CodeChanges}
-                                onChange={(e) => this.templateDetailChange(e, "CodeChanges")}
+                                checked={this.state.template.CodeChanges === 1 ? true : false}
+                                onChange={(e) => this.setDetailState("CodeChanges", this.state.template.CodeChanges === 1 ? 0 : 1)}
                             />
+                            
                         </div>
                         <div className="input-group mb-3">
                             <div className="input-group-prepend">
@@ -139,9 +138,11 @@ export class TemplateItem extends Component {
                                     External (Y/N)
                         </span>
                             </div>
-                            <input id="template-external" type="text" className="form-control"
+                            <input id="template-external" type="checkbox" className="template-input checkbox"
+                                aria-label="Enable External"
                                 value={this.state.template.External}
-                                onChange={(e) => this.templateDetailChange(e, "External")}
+                                checked={this.state.template.External === 1 ? true : false}
+                                onChange={(e) => this.setDetailState("External", this.state.template.External === 1 ? 0 : 1)}
                             />
                         </div>
                         <div className="input-group mb-3">
@@ -150,9 +151,11 @@ export class TemplateItem extends Component {
                                     New files (Y/N)
                         </span>
                             </div>
-                            <input id="template-newFiles" type="text" className="form-control"
+                            <input id="template-newFiles" type="checkbox" className="template-input checkbox"
+                                aria-label="Enable NewFiles"
                                 value={this.state.template.NewFiles}
-                                onChange={(e) => this.templateDetailChange(e, "NewFiles")}
+                                checked={this.state.template.NewFiles === 1 ? true : false}
+                                onChange={(e) => this.setDetailState("NewFiles", this.state.template.NewFiles === 1 ? 0 : 1)}
                             />
                         </div>
                         <div className="input-group mb-3">
@@ -161,9 +164,11 @@ export class TemplateItem extends Component {
                                     Ignore Metadata Only (Y/N)
                         </span>
                             </div>
-                            <input id="template-ignoreMetadataOnly" type="text" className="form-control"
+                            <input id="template-ignoreMetadataOnly" type="checkbox" className="template-input checkbox"
+                                aria-label="Enable IgnoreMetadataOnly"
                                 value={this.state.template.IgnoreMetadataOnly}
-                                onChange={(e) => this.templateDetailChange(e, "IgnoreMetadataOnly")}
+                                checked={this.state.template.IgnoreMetadataOnly === 1 ? true : false}
+                                onChange={(e) => this.setDetailState("IgnoreMetadataOnly", this.state.template.IgnoreMetadataOnly === 1 ? 0 : 1)}
                             />
                         </div>
                         <div className="input-group mb-3">
@@ -243,6 +248,7 @@ export class TemplateItem extends Component {
                         </div>
                     </fieldset>
                 </form>
+                {JSON.stringify(this.state.template)}
             </div>
         )
     }
