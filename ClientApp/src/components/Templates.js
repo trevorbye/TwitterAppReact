@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react';
 import 'react-slidedown/lib/slidedown.css';
 import { TemplatePane } from './template-components/TemplatePane'
 import { getTemplatesByHandleByUser, saveTemplate, updateTemplate, deleteTemplate } from './utils/database-utils'
-import { DISPLAY_TYPE_ENUM } from './utils/enums'
+import { DISPLAY_TYPE_ENUM, TEMPLATE_SEARCH_TYPE } from './utils/enums'
 
 const baseUrl = "http://localhost:52937/";
 
@@ -37,11 +37,12 @@ export class Templates extends Component {
             External: 0,
             NewFiles: 1,
             IgnoreMetadataOnly: 1,
-            MsServer: "", // ms.service
-            GlobPath: "",
+            SearchType: TEMPLATE_SEARCH_TYPE.SERVICE_SLUG, 
+            SearchBy: "",
             ForceNotifyTag: "#Notify",
             QueryString: "WT.mc_id=YOUR-ID-HERE",
-            Rss: ""
+            Rss: "",
+            TemplateText:""
         };
         
         

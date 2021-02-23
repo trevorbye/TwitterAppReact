@@ -116,8 +116,8 @@ export class TemplateItem extends Component {
                             <input id="template-codeChange" type="checkbox" className="template-input checkbox"
                                 aria-label="Enable Code Changes"
                                 value={this.state.template.CodeChanges}
-                                checked={this.state.template.CodeChanges === 1 ? true : false}
-                                onChange={(e) => this.setDetailState("CodeChanges", this.state.template.CodeChanges === 1 ? 0 : 1)}
+                                checked={this.state.template.CodeChanges}
+                                onChange={(e) => this.setDetailState("CodeChanges", this.state.template.CodeChanges === true ? false : true)}
                             />
                             
                         </div>
@@ -130,8 +130,8 @@ export class TemplateItem extends Component {
                             <input id="template-external" type="checkbox" className="template-input checkbox"
                                 aria-label="Enable External"
                                 value={this.state.template.External}
-                                checked={this.state.template.External === 1 ? true : false}
-                                onChange={(e) => this.setDetailState("External", this.state.template.External === 1 ? 0 : 1)}
+                                checked={this.state.template.External}
+                                onChange={(e) => this.setDetailState("External", this.state.template.External === true ? false : true)}
                             />
                         </div>
                         <div className="input-group mb-3">
@@ -143,8 +143,8 @@ export class TemplateItem extends Component {
                             <input id="template-newFiles" type="checkbox" className="template-input checkbox"
                                 aria-label="Enable NewFiles"
                                 value={this.state.template.NewFiles}
-                                checked={this.state.template.NewFiles === 1 ? true : false}
-                                onChange={(e) => this.setDetailState("NewFiles", this.state.template.NewFiles === 1 ? 0 : 1)}
+                                checked={this.state.template.NewFiles}
+                                onChange={(e) => this.setDetailState("NewFiles", this.state.template.NewFiles === true ? false : true)}
                             />
                         </div>
                         <div className="input-group mb-3">
@@ -156,8 +156,8 @@ export class TemplateItem extends Component {
                             <input id="template-ignoreMetadataOnly" type="checkbox" className="template-input checkbox"
                                 aria-label="Enable IgnoreMetadataOnly"
                                 value={this.state.template.IgnoreMetadataOnly}
-                                checked={this.state.template.IgnoreMetadataOnly === 1 ? true : false}
-                                onChange={(e) => this.setDetailState("IgnoreMetadataOnly", this.state.template.IgnoreMetadataOnly === 1 ? 0 : 1)}
+                                checked={this.state.template.IgnoreMetadataOnly}
+                                onChange={(e) => this.setDetailState("IgnoreMetadataOnly", this.state.template.IgnoreMetadataOnly === true ? false : true)}
                             />
                         </div>
                         
@@ -182,29 +182,6 @@ export class TemplateItem extends Component {
                                 value={this.state.template.Channel}
                                 onChange={(e) => this.templateDetailChange(e, "Channel")}
                             />
-                        </div>
-                        <div className="input-group mb-3">
-                            <div className="input-group-prepend">
-                                <span className="input-group-text">
-                                    Search for
-                                </span>
-                            </div>
-                            <div>
-                                <input id="template-msServer" type="radio" className="form-control"
-                                value={this.state.template.MsServer}
-                                onChange={(e) => this.templateDetailChange(e, "MsServer")}
-                                />
-                                <input id="template-msServer" type="radio" className="form-control"
-                                value={this.state.template.GlobPath}
-                                onChange={(e) => this.templateDetailChange(e, "GlobPath")}
-                                />
-                                <input id="template-service-path" type="text" className="form-control"
-                                value={this.state.template.searchType === 'service'? this.state.templage.MsService : this.state.template.GlobPath}
-                                onChange={(e) => this.templateDetailChange(e, "GlobPath")}
-                                />
-                            </div>
-                                
-                            
                         </div>
                         <div className="input-group mb-3">
                             <div className="input-group-prepend">
@@ -237,6 +214,17 @@ export class TemplateItem extends Component {
                             <input id="template-rss" type="text" className="form-control"
                                 value={this.state.template.Rss}
                                 onChange={(e) => this.templateDetailChange(e, "Rss")}
+                            />
+                        </div>
+                        <div className="input-group mb-3">
+                            <div className="input-group-prepend">
+                                <span className="input-group-text">
+                                    Template text (boilerplate)
+                        </span>
+                            </div>
+                            <input id="template-templatetext" type="text" className="form-control"
+                                value={this.state.template.TemplateText}
+                                onChange={(e) => this.templateDetailChange(e, "TemplateText")}
                             />
                         </div>
                         <div className="d-flex w-100 justify-content-between align-items-right">
