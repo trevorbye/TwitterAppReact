@@ -38,12 +38,12 @@ export class Templates extends Component {
             External: 0,
             NewFiles: 1,
             IgnoreMetadataOnly: 1,
-            SearchType: TEMPLATE_SEARCH_TYPE.SERVICE_SLUG,
+            SearchType: TEMPLATE_SEARCH_TYPE.GLOB_PATH,
             SearchBy: "",
             ForceNotifyTag: "#Notify",
             QueryString: "WT.mc_id=YOUR-ID-HERE",
             Rss: "",
-            TemplateText: ""
+            TemplateText: "New updates for {ms.service} [{title}]({filename})"
         };
 
 
