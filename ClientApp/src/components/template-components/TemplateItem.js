@@ -20,18 +20,12 @@ export class TemplateItem extends Component {
     }
     async componentDidMount() {
         console.log("TemplateItem componentDidMount " + new Date())
+        if(!this.state.template)throw Error("template not passed in")
     }
     async onSubmit(e) {
         e.preventDefault();
-        this.props.saveTemplate(this.props.msalConfig, this.state.template)
-        this.props.collapseRow();
+        this.props.saveTemplate(this.state.template)
     }
-    async onDelete(e) {
-        e.preventDefault();
-        this.props.deleteTemplate(this.props.msalConfig, this.props.template.Id, this.props.template.TwitterHandle)
-        this.props.collapseRow();
-    }
-
     async dropdownChange(event) {
         event.persist();
 
@@ -67,28 +61,6 @@ export class TemplateItem extends Component {
             </>
         )
     }
-    renderDeleteButton() {
-        return (
-            <span className="delete-button">
-                <button
-                    type="button"
-                    className="btn btn-danger my-auto template-delete"
-                    onClick={(e) => this.onDelete(e)} data-testid="template-del-btn">
-                    Delete &nbsp; <i className="fas fa-trash-alt"></i>
-                </button>
-            </span>
-        )
-    }
-    renderCancelButton() {
-        return (
-            <span className="cancel-button">
-                <button className="btn btn-secondary" onClick={() => this.props.collapseRow()}>
-                    Cancel &nbsp; <i className="fas fa-chevron-up"></i>
-                </button>
-            </span>
-        )
-    }
-
     render() {
         return (
             <div data-testid="template-new">
@@ -231,10 +203,6 @@ export class TemplateItem extends Component {
                             
                             {(this.props.displayType == DISPLAY_TYPE_ENUM.EDIT || this.props.displayType == DISPLAY_TYPE_ENUM.NEW) && this.renderSaveButton()}
                             
-                            {this.props.displayType == DISPLAY_TYPE_ENUM.EDIT &&
-                                this.renderDeleteButton()}
-                            
-                            {this.renderCancelButton()}
                         </div>
                     </fieldset>
                 </form>

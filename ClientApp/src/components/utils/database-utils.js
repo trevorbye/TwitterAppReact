@@ -12,6 +12,9 @@ export const getTwitterHandlesByUser = async (props)=>{
 }
 
 export const getTemplatesByHandleByUser = async (msalConfig, twitterHandle) => {
+    
+    if (!msalConfig || !twitterHandle) throw Error("params missing");
+    
     const authHeaders = await getAuthHeadersSilent(msalConfig);
     
     const templates = await axios.get(baseUrl + `api/tweet-templates-by-handle?twitterHandle=${twitterHandle}`, authHeaders);
@@ -19,6 +22,9 @@ export const getTemplatesByHandleByUser = async (msalConfig, twitterHandle) => {
 }
 
 export const saveTemplate = async (msalConfig, template) => {
+    
+    if (!msalConfig || !template) throw Error("params missing");
+    
     const authHeaders = await getAuthHeadersSilent(msalConfig);
     
     // do not pass in HandleUser or TweetUser
@@ -34,6 +40,9 @@ export const saveTemplate = async (msalConfig, template) => {
 }
 
 export const updateTemplate = async (msalConfig, template) => {
+    
+    if (!msalConfig || !template) throw Error("params missing");
+    
     const authHeaders = await getAuthHeadersSilent(msalConfig);
     
     // do not pass in HandleUser or TweetUser
@@ -49,6 +58,9 @@ export const updateTemplate = async (msalConfig, template) => {
 }
 
 export const deleteTemplate = async (msalConfig, Id, TwitterHandle) => {
+    
+    if (!msalConfig || !Id || !TwitterHandle) throw Error("params missing");
+    
     const authHeaders = await getAuthHeadersSilent(msalConfig);
     
     // delete
