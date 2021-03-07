@@ -16,6 +16,7 @@ export class TemplateModal extends Component {
             stringProps: JSON.stringify(props),
             template: props.template,
             name: "TemplateModal",
+            title: props.template.Id ? `Update ${props.template.title}` : `New template`
         }
     }
     async componentDidMount() {
@@ -39,9 +40,12 @@ export class TemplateModal extends Component {
     
 
     render() {
+        
+        let modalTitle = (!this.props.template) ? "" : (this.props.template.Id) ? `Update ${this.props.template.Title}` : `New template`;
+        
         return (
             <Modal id="templateModal" isOpen={this.props.modalIsOpen} toggle={() => this.onClickCancelModal()} tabIndex="-1" size="xl">
-                <ModalHeader id="templateModalHeader" toggle={() =>this.onClickCancelModal()}>{this.props.modalTitle}</ModalHeader>
+                <ModalHeader id="templateModalHeader" toggle={() =>this.onClickCancelModal()}>{modalTitle}</ModalHeader>
                 <ModalBody id="templateModalBody">
                     <TemplateItem
                         template={this.props.template}

@@ -7,9 +7,9 @@ import { DISPLAY_TYPE_ENUM, TEMPLATE_SEARCH_TYPE } from './utils/enums'
 import { Tooltip, Container, Row, Col } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const baseUrl = "http://localhost:52937/";
+//const baseUrl = "http://localhost:52937/";
 
-const listTemplates = baseUrl + "api/tweet-templates-by-handle";
+//const listTemplates = baseUrl + "api/tweet-templates-by-handle";
 
 export class Templates extends Component {
     constructor(props) {
@@ -32,16 +32,16 @@ export class Templates extends Component {
             TweetUser: "", // tweet creator
             HandleUser: "", // tweet approver
             Title: "Your new title",
-            ChangedThresholdPercentage: 70,
-            Channel: "",
+            ChangedThresholdPercentage: 100,
+            Channel: "twitter",
             CodeChanges: 0,
             External: 0,
             NewFiles: 1,
             IgnoreMetadataOnly: 1,
             SearchType: TEMPLATE_SEARCH_TYPE.GLOB_PATH,
-            SearchBy: "",
+            SearchBy: "/articles/azure-functions",
             ForceNotifyTag: "#Notify",
-            QueryString: "WT.mc_id=YOUR-ID-HERE",
+            QueryString: `WT.mc_id=${twitterHandle}-`,
             Rss: "",
             TemplateText: "New updates for {ms.service} [{title}]({filename})"
         };
@@ -138,9 +138,7 @@ export class Templates extends Component {
     }
     renderTemplates() {
 
-        if (!this.state.list || this.state.list.length == 0) {
-            return (<div>Add a new template</div>)
-        } else {
+        if (this.state.list && this.state.list.length > 0) {
             return (
 
                 <div className="templates-list">
@@ -148,6 +146,7 @@ export class Templates extends Component {
                     {this.state.list.map((template, index) => 
 
                         <TemplateListItem
+
                                 displayType={DISPLAY_TYPE_ENUM.EDIT}
                                 renderModal={(index) => this.renderModalExistingTemplate(index)}
                                 msalConfig={this.props.msalConfig}
@@ -173,8 +172,7 @@ export class Templates extends Component {
             <div>
                 <Row >
                     <div className="col-md-12 mb-3">
-                        <Col className="text-left">{tableName}</Col>
-                        <Col className="text-right"><button className="btn btn-success my-auto" onClick={() => this.renderModalNewTemplate()}>New</button></Col>
+                        <Col className="text-left"><button className="btn btn-success my-auto" onClick={() => this.renderModalNewTemplate()}>Create new template for {this.state.twitterHandle}</button></Col>
                     </div>
                 </Row>
                 <Row>

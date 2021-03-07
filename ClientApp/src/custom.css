@@ -173,6 +173,18 @@
     cursor: pointer;
 }
 .template-input {
-    margin:10px
-    
+    margin-left: 10px
 }
+.template-input-checkbox {
+    margin: 10px
+}
+
+
+
+
+/*
+* { 
+    outline: 1px solid rgb(209, 207, 207);
+    outline-offset: -1px;
+  }
+*/  
