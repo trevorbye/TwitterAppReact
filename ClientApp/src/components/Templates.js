@@ -1,15 +1,11 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import 'react-slidedown/lib/slidedown.css';
 import { TemplateModal } from './template-components/TemplateModal'
 import { TemplateListItem } from './template-components/TemplateListItem'
 import { getTemplatesByHandleByUser, saveTemplate, updateTemplate, deleteTemplate } from './utils/database-utils'
 import { DISPLAY_TYPE_ENUM, TEMPLATE_SEARCH_TYPE } from './utils/enums'
-import { Tooltip, Container, Row, Col } from 'reactstrap';
+import { Row, Col } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
-//const baseUrl = "http://localhost:52937/";
-
-//const listTemplates = baseUrl + "api/tweet-templates-by-handle";
 
 export class Templates extends Component {
     constructor(props) {
@@ -22,10 +18,16 @@ export class Templates extends Component {
 
         let twitterHandle = "";
 
-        if (props && props.location && props.location.state && props.location.state.twitterHandle) {
+        // Get twitterHandle from AccountPane Link state
+        if (props &&
+            props.location &&
+            props.location.state &&
+            props.location.state.twitterHandle) {
             twitterHandle = props.location.state.twitterHandle;
         }
 
+        // Default values for new template with defaults
+        // Some of these values aren't currently used
         const newTemplate = {
             Id: null,
             TwitterHandle: twitterHandle, // posted with tweet handle 
@@ -47,7 +49,6 @@ export class Templates extends Component {
         };
 
 
-        // props from Link in AccountPane
         this.state = {
             name: "template",
             msalConfig: props.msalConfig,
@@ -63,8 +64,8 @@ export class Templates extends Component {
     }
     async componentDidMount() {
         this.loadTemplates(this.state.msalConfig, this.state.twitterHandle)
-        console.log("Template componentDidMount " + new Date())
     }
+    // call database
     async loadTemplates(msalConfig, twitterHandle) {
         const list = await getTemplatesByHandleByUser(msalConfig, twitterHandle);
         this.setList(list);
@@ -73,8 +74,7 @@ export class Templates extends Component {
         console.log("template.js::setList");
         this.setState({
             list: list,
-            isLoading: false,
-            refresh: new Date()
+            isLoading: false
         });
     }
     
@@ -106,14 +106,13 @@ export class Templates extends Component {
             currentTemplate: null
         })
     }
+    // open or close modal for new and update 
     toggleModal() {
         this.setState({
             modalIsOpen: !this.state.modalIsOpen
         });
     }
-    
     renderModalExistingTemplate(template) {
-        
         this.setState({
             currentTemplate: template,
             modalIsOpen: true,
@@ -140,13 +139,9 @@ export class Templates extends Component {
 
         if (this.state.list && this.state.list.length > 0) {
             return (
-
                 <div className="templates-list">
-
                     {this.state.list.map((template, index) => 
-
                         <TemplateListItem
-
                                 displayType={DISPLAY_TYPE_ENUM.EDIT}
                                 renderModal={(index) => this.renderModalExistingTemplate(index)}
                                 msalConfig={this.props.msalConfig}

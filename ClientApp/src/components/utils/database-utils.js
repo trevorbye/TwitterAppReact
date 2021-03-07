@@ -1,10 +1,14 @@
 import axios from 'axios';
 import { getAuthHeadersSilent } from '../auth-utils/auth-config';
 
-const baseUrl = "http://localhost:52937/";
+const baseUrl = "https://mstwitterbot.azurewebsites.net/";
+if (!baseUrl) throw Error("baseUrl is empty");
 
 
-export const getTwitterHandlesByUser = async (props)=>{
+export const getTwitterHandlesByUser = async (props) => {
+    
+    if (!props.msalConfig) throw Error("missing parameters");
+    
     let authHeaders = await getAuthHeadersSilent(props.msalConfig);
     let handles = await axios.get(baseUrl + "api/get-distinct-handles", authHeaders);
     handles.data.unshift("");
@@ -13,7 +17,7 @@ export const getTwitterHandlesByUser = async (props)=>{
 
 export const getTemplatesByHandleByUser = async (msalConfig, twitterHandle) => {
     
-    if (!msalConfig || !twitterHandle) throw Error("params missing");
+    if (!msalConfig || !twitterHandle) throw Error("missing parameters");
     
     const authHeaders = await getAuthHeadersSilent(msalConfig);
     
@@ -23,12 +27,12 @@ export const getTemplatesByHandleByUser = async (msalConfig, twitterHandle) => {
 
 export const saveTemplate = async (msalConfig, template) => {
     
-    if (!msalConfig || !template) throw Error("params missing");
+    if (!msalConfig || !template) throw Error("missing parameters");
     
     const authHeaders = await getAuthHeadersSilent(msalConfig);
     
     // do not pass in HandleUser or TweetUser
-    // these are set/overwritter by backend
+    // these are set/overwritten by backend
     
     // new 
     const savedTemplate = await axios.post(baseUrl + `api/tweet-template`, template, authHeaders);
@@ -41,7 +45,7 @@ export const saveTemplate = async (msalConfig, template) => {
 
 export const updateTemplate = async (msalConfig, template) => {
     
-    if (!msalConfig || !template) throw Error("params missing");
+    if (!msalConfig || !template) throw Error("missing parameters");
     
     const authHeaders = await getAuthHeadersSilent(msalConfig);
     
@@ -59,7 +63,7 @@ export const updateTemplate = async (msalConfig, template) => {
 
 export const deleteTemplate = async (msalConfig, Id, TwitterHandle) => {
     
-    if (!msalConfig || !Id || !TwitterHandle) throw Error("params missing");
+    if (!msalConfig || !Id || !TwitterHandle) throw Error("missing parameters");
     
     const authHeaders = await getAuthHeadersSilent(msalConfig);
     

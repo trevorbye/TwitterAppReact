@@ -4,40 +4,27 @@ import { TemplateItem } from './TemplateItem';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 
-
+/**
+ * Displays modal behavior and presentation. 
+ */
 export class TemplateModal extends Component {
 
     constructor(props) {
         super(props);
         
-        if(!props.template) throw Error("no template passed")
+        if (!props.template) throw Error("no template passed")
+        if (!props.displayType) throw Error("no displayType passed")
+        if (!props.saveTemplate) throw Error("no saveTemplate passed")
+        if (!props.deleteTemplate) throw Error("no deleteTemplate passed")
         
         this.state = {
-            stringProps: JSON.stringify(props),
             template: props.template,
-            name: "TemplateModal",
-            title: props.template.Id ? `Update ${props.template.title}` : `New template`
+            name: "TemplateModal"
         }
     }
-    async componentDidMount() {
-        console.log("TemplateList componentDidMount " + new Date())
-    }
-    saveOrCancel(idx, type, id) {
-        //this.props.approveOrCancel(idx, type, id);
-    }
-
-    getTitle() {
-        if (this.props.canApprove) {
-            return "Queue calendar";
-        } else {
-            return "Requests calendar";
-        }
-    }
-
     onClickCancelModal() {
         this.props.toggleModal()
     }
-    
 
     render() {
         

@@ -1,48 +1,43 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { Button, ButtonGroup } from 'reactstrap';
 import { DISPLAY_TYPE_ENUM, TEMPLATE_SEARCH_TYPE } from '../utils/enums'
 
-const baseUrl = "http://localhost:52937/";
-
-const addTemplate = baseUrl + "api/tweet-template";
-
+/**
+ * Displays template form for insert or update. 
+ */
 export class TemplateItem extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
             isDirty: false,
-            isValidTemplate: true,
             template: props.template,
             formDisabled: props.displayType == DISPLAY_TYPE_ENUM.DISPLAY ? true : false,
-            name: "templateItem",
-            refresh: props.refresh
+            name: "templateItem"
         }
     }
-    async componentDidMount() {
-        console.log("TemplateItem componentDidMount " + new Date())
-        if (!this.state.template) throw Error("template not passed in")
+    componentDidMount() {
+        if (!this.state.template ||
+            !this.props.template ||
+            !this.props.saveTemplate) throw Error("template props not passed in correctly")
     }
+    // --------------------------------------------------------
+    // External - Save to Database
     async onSubmit(e) {
         e.preventDefault();
         this.props.saveTemplate(this.state.template)
     }
+    
+    // --------------------------------------------------------
+    // Internal controls
     onCheckboxBtnClick = (searchType) => {
         this.setDetailState("SearchType", searchType);
-    }
-
-    async dropdownChange(event) {
-        event.persist();
-
-        this.setState({
-            selectedHandle: event.target.value,
-            publicHandleEvents: []
-        });
     }
     templateDetailChange(e, name) {
 
         this.setDetailState(name, e.target.value)
     }
+    // Change internal template
     setDetailState(name, value) {
         const templateTemp = Object.assign({}, this.state.template)
         templateTemp[name] = value;
@@ -53,22 +48,9 @@ export class TemplateItem extends Component {
         });
     }
 
-    renderSaveButton() {
-        return (
-            <>
-                <span className="save-button">
-                    <button
-                        disabled={this.state.isDirty ? false : true}
-                        type="submit"
-                        className="btn btn-primary btn-sm">Save</button>
-                </span>
-
-            </>
-        )
-    }
     render() {
         return (
-            <div data-testid="template-new">
+            <div data-testid="template-new-update">
 
                 <form onSubmit={(e) => this.onSubmit(e)}>
                     <fieldset disabled={this.state.formDisabled} style={this.state.formDisabled ? { pointerEvents: "none", opacity: "0.4" } : {}}>
@@ -236,7 +218,16 @@ export class TemplateItem extends Component {
                         </div>
                         <div className="d-flex w-100 justify-content-between align-items-right">
 
-                            {(this.props.displayType == DISPLAY_TYPE_ENUM.EDIT || this.props.displayType == DISPLAY_TYPE_ENUM.NEW) && this.renderSaveButton()}
+                            {(this.props.displayType == DISPLAY_TYPE_ENUM.EDIT || this.props.displayType == DISPLAY_TYPE_ENUM.NEW) && 
+                            
+                            <span className="save-button">
+                            <button
+                                disabled={this.state.isDirty ? false : true}
+                                type="submit"
+                                className="btn btn-primary btn-sm">Save</button>
+                            </span>
+                            
+                            }
 
                         </div>
                     </fieldset>

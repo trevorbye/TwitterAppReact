@@ -1,29 +1,20 @@
-import React, { Component, Fragment } from 'react';
-import { Tooltip, Modal, ModalHeader, ModalFooter, ModalBody, Container, Row, Col } from 'reactstrap';
-import { SlideDown } from 'react-slidedown';
-import { TemplateItem } from './TemplateItem';
-import { DISPLAY_TYPE_ENUM, TEMPLATE_SEARCH_TYPE } from '../utils/enums'
-
+import React, { Component } from 'react';
 import { getHumanReadableTime, localeStatusTime } from '../utils/time-util';
 
+/**
+ * Displays list of templates with a few details and edit/delete buttons
+ */
 export class TemplateListItem extends Component {
     constructor(props) {
         super(props);
-
-        //this.collapseRow = this.collapseRow.bind(this);
 
         this.state = {
             settingsExpanded: false,
             toggleModal: props.toggleModal,
             deleteModalOpen: false,
-            refresh: props.refresh,
             name: "templateList",
         }
     }
-    async componentDidMount() {
-        console.log("TemplateList componentDidMount " + new Date())
-    }
-
     openModal() {
         this.setState({
             deleteModalOpen: !this.state.deleteModalOpen
@@ -31,12 +22,10 @@ export class TemplateListItem extends Component {
     }
     
     onClickEdit() {
-        console.log(`edit button selected`)
         this.props.renderModal(this.props.template)
     }
 
     onClickDelete() {
-        console.log(`delete button selected`)
         this.props.deleteTemplate(this.props.template.Id, this.props.template.TwitterHandle);
     }
     
