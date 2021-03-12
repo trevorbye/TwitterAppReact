@@ -1,18 +1,25 @@
 import axios from 'axios';
 import { getAuthHeadersSilent } from '../auth-utils/auth-config';
-
-const baseUrl = "https://mstwitterbot.azurewebsites.net/";
-if (!baseUrl) throw Error("baseUrl is empty");
-
+import { AppConfig } from "../../config";
 
 export const getTwitterHandlesByUser = async (props) => {
     
     if (!props.msalConfig) throw Error("missing parameters");
     
     let authHeaders = await getAuthHeadersSilent(props.msalConfig);
-    let handles = await axios.get(baseUrl + "api/get-distinct-handles", authHeaders);
+    let handles = await axios.get(AppConfig.APP_SERVER_BASE_URL + "api/get-distinct-handles", authHeaders);
     handles.data.unshift("");
     return handles;
+}
+
+export const getTemplatesAll = async (msalConfig) => {
+    
+    if (!msalConfig) throw Error("missing parameters");
+    
+    const authHeaders = await getAuthHeadersSilent(msalConfig);
+    
+    const templates = await axios.get(AppConfig.APP_SERVER_BASE_URL + `api/tweet-templates-all`, authHeaders);
+    return templates.data;
 }
 
 export const getTemplatesByHandleByUser = async (msalConfig, twitterHandle) => {
@@ -21,7 +28,7 @@ export const getTemplatesByHandleByUser = async (msalConfig, twitterHandle) => {
     
     const authHeaders = await getAuthHeadersSilent(msalConfig);
     
-    const templates = await axios.get(baseUrl + `api/tweet-templates-by-handle?twitterHandle=${twitterHandle}`, authHeaders);
+    const templates = await axios.get(AppConfig.APP_SERVER_BASE_URL + `api/tweet-templates-by-handle?twitterHandle=${twitterHandle}`, authHeaders);
     return templates.data;
 }
 
@@ -35,7 +42,7 @@ export const saveTemplate = async (msalConfig, template) => {
     // these are set/overwritten by backend
     
     // new 
-    const savedTemplate = await axios.post(baseUrl + `api/tweet-template`, template, authHeaders);
+    const savedTemplate = await axios.post(AppConfig.APP_SERVER_BASE_URL + `api/tweet-template`, template, authHeaders);
     
     // get updated list
     const updatedList = await getTemplatesByHandleByUser(msalConfig, template.TwitterHandle);
@@ -53,7 +60,7 @@ export const updateTemplate = async (msalConfig, template) => {
     // these are set/overwritten by backend
     
     // update
-    const updatedTemplate = await axios.patch(baseUrl + `api/tweet-template`, template, authHeaders);
+    const updatedTemplate = await axios.patch(AppConfig.APP_SERVER_BASE_URL + `api/tweet-template`, template, authHeaders);
     
     // get updated list
     const updatedList = await getTemplatesByHandleByUser(msalConfig, template.TwitterHandle);
@@ -68,7 +75,7 @@ export const deleteTemplate = async (msalConfig, Id, TwitterHandle) => {
     const authHeaders = await getAuthHeadersSilent(msalConfig);
     
     // delete
-    await axios.delete(baseUrl + `api/tweet-template?Id=${Id}`, authHeaders);
+    await axios.delete(AppConfig.APP_SERVER_BASE_URL + `api/tweet-template?Id=${Id}`, authHeaders);
     
     // get updated list
     const updatedList = await getTemplatesByHandleByUser(msalConfig, TwitterHandle);
