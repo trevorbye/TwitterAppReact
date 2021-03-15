@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { getAuthHeadersSilent } from './auth-utils/auth-config';
 import { parse } from 'query-string';
 import axios from 'axios';
-import { AppConfig } from "../../config";
+import { AppConfig } from "../config";
 
 export class AccountRedirect extends Component {
     constructor(props) {

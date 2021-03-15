@@ -5,7 +5,7 @@ import { TweetImageBlock } from './tweet-components/TweetImageBlock';
 import { CalendarModal } from './CalendarModal.js';
 import { fileToBase64 } from './utils/file-util';
 import axios from 'axios';
-import { AppConfig } from "../../config";
+import { AppConfig } from "../config";
 
 export class Compose extends Component {
     constructor(props) {

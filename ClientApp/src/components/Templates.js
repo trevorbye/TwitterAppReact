@@ -24,8 +24,6 @@ export class Templates extends Component {
         let twitterHandle = "",
             error = "";
 
-        const params = QueryString.parse(props.location.search);
-
         // Get twitterHandle from AccountPane Link state
         if (props &&
             props.location &&
@@ -33,8 +31,6 @@ export class Templates extends Component {
             props.location.state.twitterHandle) {
             twitterHandle = props.location.state.twitterHandle;
 
-        } else if (params.all) {
-            twitterHandle = "*"
         } else {
             error = "twitterHandle isn't found. ";
         }
@@ -84,16 +80,8 @@ export class Templates extends Component {
     // call database
     async loadTemplates(msalConfig, twitterHandle) {
 
-        // get twitterHandle templates
-        if (twitterHandle != "*") {
-            const list = await getTemplatesByHandleByUser(msalConfig, twitterHandle);
-            this.setList(list);
-        } else {
-            
-            // get all templates
-            const list = await getTemplatesAll(msalConfig);
-            this.setList(list);
-        }
+        const list = await getTemplatesByHandleByUser(msalConfig, twitterHandle);
+        this.setList(list);
     }
     async setList(list) {
         console.log("template.js::setList");
@@ -190,41 +178,37 @@ export class Templates extends Component {
         if (this.state.error) {
             return (<div>{this.state.error}</div>)
         } else {
-            
-            if (this.state.twitterHandle = "*") {
-                return (
-                    <div>{JSON.stringify(this.state.list)}</div>
-                )
-            } else {
-                return (
 
-                    < div >
-                        <Row >
-                            <div className="col-md-12 mb-3">
-                                <Col className="text-left"><button className="btn btn-success my-auto" onClick={() => this.renderModalNewTemplate()}>Create new template for {this.state.twitterHandle}</button></Col>
-                            </div>
-                        </Row>
-                        <Row>
-                            <div className="col-md-12 mb-3">
-                                {this.state.isLoading
-                                    ? this.renderLoading()
-                                    : this.renderTemplates()}
-                            </div>
-                        </Row>
-                        <TemplateModal
-                            displayType={this.state.displayType}
-                            template={this.state.currentTemplate}
-                            key={`templateModal`}
-                            deleteTemplate={this.deleteTemplate}
-                            saveTemplate={this.saveTemplate}
-                            toggleModal={this.toggleModal}
-                            modalIsOpen={this.state.modalIsOpen}
-                        />
 
-                    </div >
+            return (
 
-                )
-            }
+                < div >
+                    <Row >
+                        <div className="col-md-12 mb-3">
+                            <Col className="text-left"><button className="btn btn-success my-auto" onClick={() => this.renderModalNewTemplate()}>Create new template for {this.state.twitterHandle}</button></Col>
+                        </div>
+                    </Row>
+                    <Row>
+                        <div className="col-md-12 mb-3">
+                            {this.state.isLoading
+                                ? this.renderLoading()
+                                : this.renderTemplates()}
+                        </div>
+                    </Row>
+                    <TemplateModal
+                        displayType={this.state.displayType}
+                        template={this.state.currentTemplate}
+                        key={`templateModal`}
+                        deleteTemplate={this.deleteTemplate}
+                        saveTemplate={this.saveTemplate}
+                        toggleModal={this.toggleModal}
+                        modalIsOpen={this.state.modalIsOpen}
+                    />
+
+                </div >
+
+            )
+
         }
 
 

@@ -6,7 +6,7 @@ import { CalendarModal } from './CalendarModal.js';
 import axios from 'axios';
 import { getAuthHeadersSilent } from './auth-utils/auth-config';
 import { getHumanReadableTime, localeStatusTime } from './utils/time-util';
-import { AppConfig } from "../../config";
+import { AppConfig } from "../config";
 
 export class TweetQueue extends Component {
     constructor(props) {

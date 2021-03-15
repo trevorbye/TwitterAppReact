@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { AccountPane } from './AccountPane';
 import { getAuthHeadersSilent } from './auth-utils/auth-config';
 import axios from 'axios';
-import { AppConfig } from "../../config";
+import { AppConfig } from "../config";
 
 export class Account extends Component {
     constructor(props) {
@@ -87,7 +87,7 @@ export class Account extends Component {
 
 
         let authHeaders = await getAuthHeadersSilent(this.props.msalConfig);
-        await axios.delete(bAppConfig.APP_SERVER_BASE_URL + `api/delete-twitter-account?handle=${handle.TwitterHandle}`, authHeaders);
+        await axios.delete(AppConfig.APP_SERVER_BASE_URL + `api/delete-twitter-account?handle=${handle.TwitterHandle}`, authHeaders);
     }
 
     async twitterSignIn() {
