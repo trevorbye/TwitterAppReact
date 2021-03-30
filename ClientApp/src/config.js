@@ -1,3 +1,5 @@
 export const AppConfig = {
-    APP_SERVER_BASE_URL: process.env.REACT_APP_TWITTERAPP_SERVER ? process.env.REACT_APP_TWITTERAPP_SERVER : "https://mstwitterbot.azurewebsites.net/"
-}
+    APP_SERVER_BASE_URL: "http://localhost:52937/"
+};
+console.log(AppConfig);
+console.log(process.env);

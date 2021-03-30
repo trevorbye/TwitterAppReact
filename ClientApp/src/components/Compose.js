@@ -60,7 +60,9 @@ export class Compose extends Component {
 
         let authHeaders = await getAuthHeadersSilent(this.props.msalConfig);
         try {
-            let response = await axios.post(AppConfig.APP_SERVER_BASE_URL + "api/post-new-tweet", tweetPostObject, authHeaders);
+            const url = AppConfig.APP_SERVER_BASE_URL + "api/post-new-tweet";
+            
+            let response = await axios.post(url, tweetPostObject, authHeaders);
             let queueObject = {
                 "Id": response.data.Id,
                 "TwitterUser": response.data.TweetUser,

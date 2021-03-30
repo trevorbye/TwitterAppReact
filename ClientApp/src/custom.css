@@ -180,11 +180,21 @@
 }
 
 
-
-
+.row, .template-row-outer{
+    margin-left: 0px;
+    margin-bottom: 10px;
+}
+.row, .template-row-inner{
+    margin-left: 0px;
+    margin-bottom: 10px;
+}
+.col, .template-col{
+    padding-right: 0px;
+    padding-left: 0px;
+}
 /*
 * { 
     outline: 1px solid rgb(209, 207, 207);
     outline-offset: -1px;
   }
-*/  
+ */
