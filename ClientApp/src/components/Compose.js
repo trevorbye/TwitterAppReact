@@ -4,6 +4,7 @@ import { validateTweetBody } from './utils/twitter-text-util.js';
 import { TweetImageBlock } from './tweet-components/TweetImageBlock';
 import { CalendarModal } from './CalendarModal.js';
 import { fileToBase64 } from './utils/file-util';
+import { ScheduledDateAndTime } from './tweet-components/ScheduledDateAndTime'
 import axios from 'axios';
 import { AppConfig } from "../config";
 
@@ -246,24 +247,13 @@ export class Compose extends Component {
                     <span className="badge">{this.state.bodyState.bodyLenText}</span>
                 </div>
 
-                <div className="input-group mb-3">
-                    <label>Leave either date <strong>or</strong> time blank to post the tweet as soon as it's approved.</label>
-                    <label className="sr-only" for="tweet-date">Schedule tweet date</label>
-                    <label className="sr-only" for="tweet-time">Schedule tweet time</label>
-                    <div className="input-group-prepend">
-                        <span className="input-group-text">
-                            Scheduled date & time
-                        </span>
-                    </div>
-                    <input id="tweet-date" type="date" max="3000-12-31" min="1000-01-01" className="form-control" 
-                        value={this.state.dateInput} 
-                        onChange={(e) => this.dateChange(e)} 
-                    />
-                    <input id="tweet-time" type="time" className="form-control" 
-                        value={this.state.timeInput} 
-                        onChange={(e) => this.timeChange(e)} 
-                    />
-                </div>
+                <ScheduledDateAndTime
+                    edit={false}
+                    time={this.state.timeInput}
+                    date={this.state.dateInput}
+                    dateChange={this.state.dateChange}
+                    timeChange={this.state.timeChange}
+                />
                 
                 {
                     this.state.imageFileList.length <= 3 &&

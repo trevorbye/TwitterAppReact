@@ -1,4 +1,6 @@
-﻿export function getHumanReadableTime(utcServerTimestamp, utcTweetTimestamp) {
+﻿import { dateFnsLocalizer } from "react-big-calendar";
+
+export function getHumanReadableTime(utcServerTimestamp, utcTweetTimestamp) {
     let utcNow = Date.parse(utcServerTimestamp);
     let utcTweetTime = Date.parse(utcTweetTimestamp + "Z");
     let elapsedTimeSeconds = (utcNow - utcTweetTime) / 1000;
@@ -21,5 +23,42 @@
 
 export function localeStatusTime(tweetScheduledStatusTimestamp) {
     let timeUtc = tweetScheduledStatusTimestamp + "Z";
-    return new Date(timeUtc).toLocaleString();
+    let timeString = new Date(timeUtc).toLocaleString();
+    return timeString;
+}
+// "Pacific Standard Time"
+export const timeZoneName = (date) => {
+    
+    if (!date) throw Error("param is empty");
+    
+    const dateAsString = date.toString();
+    return dateAsString.match(/\(([^\)]+)\)$/)[1];
+}
+// timezone, i.e. -0700
+export const timeZoneOffset= (date) => {
+    
+    if (!date) throw Error("param is empty");
+    
+    return date.toString().split("GMT")[1].split(" (")[0]; 
+}
+// Use for <input type="date">
+export const inputDateFormat = (date) => {
+    
+    if (!date) throw Error("param is empty");
+    
+    return date.toISOString().substr(0, 10);
+}
+// Use for <input type="time">
+export const inputTimeFormat = (date) => {
+    
+    if (!date) throw Error("param is empty");
+    
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    
+    // add padding
+    hours = (hours < 10 ? "0" : "") + hours;
+    minutes = (minutes < 10 ? "0" : "") + minutes;
+    
+    return `${hours}:${minutes}`
 }
