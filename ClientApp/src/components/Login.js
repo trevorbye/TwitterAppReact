@@ -1,9 +1,39 @@
 ﻿import React, { Component } from 'react';
 import { login } from './auth-utils/auth-config'
+import axios from 'axios';
+import { AppConfig } from "../config";
 
 export class Login extends Component {
+    
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            appMessageBeforeLogin: ""
+        }
+    }
+    
+    
     componentDidMount() {
-        window.history.replaceState(null, "Login", "/")
+        window.history.replaceState(null, "Login", "/");
+        this.getAppMessageBeforeLogin();
+    }
+    
+    async getAppMessageBeforeLogin() {
+        
+        try {
+            const res = await axios.get(AppConfig.APP_SERVER_BASE_URL + "api/app-message-before-login");
+
+            if (res.data) {
+                this.setState({
+                    appMessageBeforeLogin: res.data
+                });
+            }
+
+        } catch (err) {
+            console.log("api/app-message-before-login failed");
+        }
+
     }
     
     async loginClickHandler() {
@@ -24,6 +54,9 @@ export class Login extends Component {
                             <span className="align-middle ml-2">Microsoft employee sign in</span>
                         </button>
                     </div>
+                </div>
+                <div className="row justify-content-center login-container">
+                    {this.state.appMessageBeforeLogin}
                 </div>
             </div>
         );

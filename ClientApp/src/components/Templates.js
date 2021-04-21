@@ -95,14 +95,12 @@ export class Templates extends Component {
     // new and update
     async saveTemplate(template) {
 
-        let newList = [];
-
         if (template.Id != null) {
-            newList = await updateTemplate(this.props.msalConfig, template);
+            await updateTemplate(this.props.msalConfig, template);
         } else {
-            newList = await saveTemplate(this.props.msalConfig, template);
+            await saveTemplate(this.props.msalConfig, template);
         }
-        this.setList(newList);
+        this.loadTemplates(this.props.msalConfig, template.TwitterHandle);
 
         this.setState({
             modalIsOpen: false,
@@ -112,8 +110,8 @@ export class Templates extends Component {
 
     // delete
     async deleteTemplate(id, twitterHandle) {
-        const updatedList = await deleteTemplate(this.props.msalConfig, id, twitterHandle);
-        this.setList(updatedList);
+        await deleteTemplate(this.props.msalConfig, id, twitterHandle);
+        this.loadTemplates(this.props.msalConfig, twitterHandle);
         this.setState({
             modalIsOpen: false,
             currentTemplate: null
