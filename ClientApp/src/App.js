@@ -21,6 +21,7 @@ export default class App extends Component {
         this.state = {
             hasCheckedCachedAuth: false,
             isAuthenticated: false,
+            attemptedGuestLogin: false,
             msalConfig: msalApp,
             user: null, 
             viewportHeight: window.innerHeight
@@ -37,10 +38,16 @@ export default class App extends Component {
     }
 
     updateAuthState(user) {
-        this.setState({
-            isAuthenticated: true,
-            user: user
-        });
+        if (user != null) {
+            this.setState({
+                isAuthenticated: true,
+                user: user
+            });
+        } else {
+            this.setState({
+                attemptedGuestLogin: true
+            });
+        }
     }
 
     logoutHandler() {
@@ -52,7 +59,7 @@ export default class App extends Component {
             return null;
         }
         else if (!this.state.isAuthenticated) {
-            return <Login msalConfig={this.state.msalConfig} updateAuthState={(userName) => this.updateAuthState(userName)} />
+            return <Login msalConfig={this.state.msalConfig} updateAuthState={(userName) => this.updateAuthState(userName)} attemptedGuestLogin={this.state.attemptedGuestLogin} />
         }
         else {
             return (
