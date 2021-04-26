@@ -6,6 +6,7 @@ import { CalendarModal } from './CalendarModal.js';
 import { fileToBase64 } from './utils/file-util';
 import { ScheduledDateAndTime } from './tweet-components/ScheduledDateAndTime'
 import axios from 'axios';
+import { AppConfig } from "../config";
 
 export class Compose extends Component {
     constructor(props) {
@@ -30,9 +31,8 @@ export class Compose extends Component {
     }
 
     async componentDidMount() {
-        const baseUrl = "https://mstwitterbot.azurewebsites.net/";
         let authHeaders = await getAuthHeadersSilent(this.props.msalConfig);
-        let handles = await axios.get(baseUrl + "api/get-distinct-handles", authHeaders);
+        let handles = await axios.get(AppConfig.APP_SERVER_BASE_URL + "api/get-distinct-handles", authHeaders);
         handles.data.unshift("");
 
         this.setState({
@@ -59,10 +59,11 @@ export class Compose extends Component {
             "ImageBase64Strings": this.state.imageFileList
         };
 
-        const baseUrl = "https://mstwitterbot.azurewebsites.net/";
         let authHeaders = await getAuthHeadersSilent(this.props.msalConfig);
         try {
-            let response = await axios.post(baseUrl + "api/post-new-tweet", tweetPostObject, authHeaders);
+            const url = AppConfig.APP_SERVER_BASE_URL + "api/post-new-tweet";
+            
+            let response = await axios.post(url, tweetPostObject, authHeaders);
             let queueObject = {
                 "Id": response.data.Id,
                 "TwitterUser": response.data.TweetUser,
@@ -114,9 +115,8 @@ export class Compose extends Component {
             publicHandleEvents: []
         });
 
-        const baseUrl = "https://mstwitterbot.azurewebsites.net/";
         let authHeaders = await getAuthHeadersSilent(this.props.msalConfig);
-        let res = await axios.get(baseUrl + `api/get-public-schedule?handle=${event.target.value}`, authHeaders);
+        let res = await axios.get(AppConfig.APP_SERVER_BASE_URL + `api/get-public-schedule?handle=${event.target.value}`, authHeaders);
         let publicQueue = res.data;
 
         let eventList = [];

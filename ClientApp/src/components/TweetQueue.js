@@ -6,6 +6,7 @@ import { CalendarModal } from './CalendarModal.js';
 import axios from 'axios';
 import { getAuthHeadersSilent } from './auth-utils/auth-config';
 import { getHumanReadableTime, localeStatusTime } from './utils/time-util';
+import { AppConfig } from "../config";
 
 export class TweetQueue extends Component {
     constructor(props) {
@@ -21,13 +22,12 @@ export class TweetQueue extends Component {
     }
 
     async componentDidMount() {
-        const baseUrl = "https://mstwitterbot.azurewebsites.net/";
         let authHeaders = await getAuthHeadersSilent(this.props.msalConfig);
         
-        let utcRes = await axios.get(baseUrl + "api/get-utc-now");
+        let utcRes = await axios.get(AppConfig.APP_SERVER_BASE_URL + "api/get-utc-now");
 
         let queueUrl = this.props.compose ? "user" : "handles";
-        let tweetRes = await axios.get(baseUrl + `api/get-${queueUrl}-tweet-queue`, authHeaders);
+        let tweetRes = await axios.get(AppConfig.APP_SERVER_BASE_URL + `api/get-${queueUrl}-tweet-queue`, authHeaders);
         let utcServerTimestamp = utcRes.data;
         let tweetQueue = tweetRes.data;
 
@@ -112,9 +112,8 @@ export class TweetQueue extends Component {
             eventList: eventListCopy
         });
 
-        const baseUrl = "https://mstwitterbot.azurewebsites.net/";
         let authHeaders = await getAuthHeadersSilent(this.props.msalConfig);
-        await axios.delete(baseUrl + `api/delete-tweet?id=${id}`, authHeaders);
+        await axios.delete(AppConfig.APP_SERVER_BASE_URL + `api/delete-tweet?id=${id}`, authHeaders);
     }
 
     async deleteImageByIndex(imageIdx, tweetIdx) {
@@ -131,9 +130,8 @@ export class TweetQueue extends Component {
             tweetQueue: tweetQueueCopy,
         });
 
-        const baseUrl = "https://mstwitterbot.azurewebsites.net/";
         let authHeaders = await getAuthHeadersSilent(this.props.msalConfig);
-        await axios.delete(baseUrl + `api/delete-tweet-image?tweetId=${tweetQueueCopy[tweetIdx].Id}&imageIdx=${imageIdx}`, authHeaders);
+        await axios.delete(AppConfig.APP_SERVER_BASE_URL + `api/delete-tweet-image?tweetId=${tweetQueueCopy[tweetIdx].Id}&imageIdx=${imageIdx}`, authHeaders);
 
         this.setState({
             imageDeleteInProg: false
@@ -170,9 +168,8 @@ export class TweetQueue extends Component {
             eventList: eventListCopy
         });
 
-        const baseUrl = "https://mstwitterbot.azurewebsites.net/";
         let authHeaders = await getAuthHeadersSilent(this.props.msalConfig);
-        await axios.post(baseUrl + "api/edit-tweet-attributes", { Id: tweetId, StatusBody: editState.body, ScheduledStatusTime: datetime }, authHeaders);
+        await axios.post(AppConfig.APP_SERVER_BASE_URL + "api/edit-tweet-attributes", { Id: tweetId, StatusBody: editState.body, ScheduledStatusTime: datetime }, authHeaders);
     }
 
     async approveOrCancelAndRemove(idx, type, id) {
@@ -206,11 +203,10 @@ export class TweetQueue extends Component {
             eventList: eventListCopy
         });
 
-        const baseUrl = "https://mstwitterbot.azurewebsites.net/";
         let authHeaders = await getAuthHeadersSilent(this.props.msalConfig);
         type === 'approve' ?
-            await axios.get(baseUrl + `api/approve-or-cancel?approveById=${id}&cancelById=0`, authHeaders) :
-            await axios.get(baseUrl + `api/approve-or-cancel?cancelById=${id}&approveById=0`, authHeaders);
+            await axios.get(AppConfig.APP_SERVER_BASE_URL + `api/approve-or-cancel?approveById=${id}&cancelById=0`, authHeaders) :
+            await axios.get(AppConfig.APP_SERVER_BASE_URL + `api/approve-or-cancel?cancelById=${id}&approveById=0`, authHeaders);
     }
 
     loadingQueueDiv() {

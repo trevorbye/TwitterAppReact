@@ -9,6 +9,7 @@ import { TweetQueue } from './components/TweetQueue';
 import { Account } from './components/Account';
 import { Info } from './components/Info';
 import { AccountRedirect } from './components/AccountRedirect';
+import { Templates } from './components/Templates';
 
 import { msalApp, initialCachedAuthCheck, logout } from './components/auth-utils/auth-config'
 import './custom.css'
@@ -82,6 +83,11 @@ export default class App extends Component {
                                 />}
                             />
                             <Route path="/account" render={() => <Account msalConfig={this.state.msalConfig} />} />
+                            <Route path="/templates" render={(props) => {
+                                console.log(props);
+                                return <Templates msalConfig={this.state.msalConfig} {...props} />
+                                
+                            }} />
                             <Route path="/info" component={Info} />
                             <Route path="/add-account-redirect" render={(props) => <AccountRedirect msalConfig={this.state.msalConfig} location={props.location} />} />
                         </Switch>

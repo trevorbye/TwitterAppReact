@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Tooltip, Modal, ModalHeader, ModalFooter, ModalBody } from 'reactstrap';
 import { SlideDown } from 'react-slidedown';
+import { Link } from 'react-router-dom';
 
 export class AccountPane extends Component {
     constructor(props) {
@@ -11,6 +12,7 @@ export class AccountPane extends Component {
             mentionTooltipOpen: false,
             privateTooltipOpen: false,
             scheduleTooltipOpen: false,
+            templateTooltipOpen: false,
             deleteModalOpen: false
         }
     }
@@ -36,6 +38,12 @@ export class AccountPane extends Component {
     togglePrivateTooltip() {
         this.setState({
             privateTooltipOpen: !this.state.privateTooltipOpen
+        });
+    }
+    
+    toggleTemplateTooltip() {
+        this.setState({
+            templateTooltipOpen: !this.state.templateTooltipOpen
         });
     }
 
@@ -112,6 +120,22 @@ export class AccountPane extends Component {
                                         <i className="fas fa-toggle-on fa-2x" onClick={() => this.props.togglePublicSchedule(this.props.handle, this.props.idx, false)}></i> :
                                         <i className="fas fa-toggle-off fa-2x" onClick={() => this.props.togglePublicSchedule(this.props.handle, this.props.idx, true)}></i>
                                     }
+                                </div>
+                                
+                                <div className="d-flex w-100 justify-content-between mb-3">
+                                    <p className="my-auto">Autogen Templates <i className="fas fa-info-circle" id="template-tooltip"></i></p>
+                                    <Tooltip placement="top" target="template-tooltip" isOpen={this.state.templateTooltipOpen} toggle={() => this.toggleTemplateTooltip()}>
+                                        Templates are used to autogenerate tweets into this system. Autogen tweets still require approval.
+                                    </Tooltip>
+                                    <Link
+                                        id={`template-handle-button-${this.props.handle.TwitterHandle}`}
+                                        handle={this.props.handle.TwitterHandle} type="button" className="btn btn-info"
+                                        role="button"
+                                        to={{
+                                            pathname: "/templates",
+                                            state: { twitterHandle: this.props.handle.TwitterHandle}
+                                          }}
+                                    >Templates</Link>
                                 </div>
 
                             </div>

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { AccountPane } from './AccountPane';
 import { getAuthHeadersSilent } from './auth-utils/auth-config';
 import axios from 'axios';
+import { AppConfig } from "../config";
 
 export class Account extends Component {
     constructor(props) {
@@ -15,9 +16,8 @@ export class Account extends Component {
     }
 
     async componentDidMount() {
-        const baseUrl = "https://mstwitterbot.azurewebsites.net/";
         let authHeaders = await getAuthHeadersSilent(this.props.msalConfig);
-        let res = await axios.get(baseUrl + "api/get-user-twitter-accounts", authHeaders);
+        let res = await axios.get(AppConfig.APP_SERVER_BASE_URL + "api/get-user-twitter-accounts", authHeaders);
 
         this.setState({
             isLoadingHandles: false,
@@ -41,9 +41,8 @@ export class Account extends Component {
             handles: handlesCopy
         });
 
-        const baseUrl = "https://mstwitterbot.azurewebsites.net/";
         let authHeaders = await getAuthHeadersSilent(this.props.msalConfig);
-        await axios.get(baseUrl + `api/disable-auto-tweets?handle=${handle.TwitterHandle}`, authHeaders);
+        await axios.get(AppConfig.APP_SERVER_BASE_URL + `api/disable-auto-tweets?handle=${handle.TwitterHandle}`, authHeaders);
     }
 
     async enableAutoTweets(handle, idx) {
@@ -53,9 +52,8 @@ export class Account extends Component {
             handles: handlesCopy
         });
 
-        const baseUrl = "https://mstwitterbot.azurewebsites.net/";
         let authHeaders = await getAuthHeadersSilent(this.props.msalConfig);
-        await axios.get(baseUrl + `api/enable-auto-tweets?handle=${handle.TwitterHandle}`, authHeaders);
+        await axios.get(AppConfig.APP_SERVER_BASE_URL + `api/enable-auto-tweets?handle=${handle.TwitterHandle}`, authHeaders);
     }
 
     async togglePrivateAccount(handle, idx, isPrivate) {
@@ -65,9 +63,8 @@ export class Account extends Component {
             handles: handlesCopy
         });
 
-        const baseUrl = "https://mstwitterbot.azurewebsites.net/";
         let authHeaders = await getAuthHeadersSilent(this.props.msalConfig);
-        await axios.get(baseUrl + `api/toggle-private-account?handle=${handle.TwitterHandle}&isPrivate=${isPrivate}`, authHeaders);
+        await axios.get(AppConfig.APP_SERVER_BASE_URL + `api/toggle-private-account?handle=${handle.TwitterHandle}&isPrivate=${isPrivate}`, authHeaders);
     }
 
     async toggleMakeSchedulePublic(handle, idx, isPublic) {
@@ -77,9 +74,8 @@ export class Account extends Component {
             handles: handlesCopy
         });
 
-        const baseUrl = "https://mstwitterbot.azurewebsites.net/";
         let authHeaders = await getAuthHeadersSilent(this.props.msalConfig);
-        await axios.get(baseUrl + `api/toggle-public-schedule?handle=${handle.TwitterHandle}&isPublic=${isPublic}`, authHeaders);
+        await axios.get(AppConfig.APP_SERVER_BASE_URL + `api/toggle-public-schedule?handle=${handle.TwitterHandle}&isPublic=${isPublic}`, authHeaders);
     }
 
     async deleteAccount(handle, idx) {
@@ -89,15 +85,15 @@ export class Account extends Component {
             handles: handlesCopy
         });
 
-        const baseUrl = "https://mstwitterbot.azurewebsites.net/";
+
         let authHeaders = await getAuthHeadersSilent(this.props.msalConfig);
-        await axios.delete(baseUrl + `api/delete-twitter-account?handle=${handle.TwitterHandle}`, authHeaders);
+        await axios.delete(AppConfig.APP_SERVER_BASE_URL + `api/delete-twitter-account?handle=${handle.TwitterHandle}`, authHeaders);
     }
 
     async twitterSignIn() {
-        const baseUrl = "https://mstwitterbot.azurewebsites.net/";
+
         let authHeaders = await getAuthHeadersSilent(this.props.msalConfig);
-        let response = await axios.get(baseUrl + `api/twitter-auth-token`, authHeaders);
+        let response = await axios.get(AppConfig.APP_SERVER_BASE_URL + `api/twitter-auth-token`, authHeaders);
         window.location.replace(`https://api.twitter.com/oauth/authenticate?oauth_token=${response.data}`);  
     }
 

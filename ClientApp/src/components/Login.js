@@ -1,19 +1,47 @@
 ﻿import React, { Component } from 'react';
 import { login, getAuthHeadersSilent } from './auth-utils/auth-config'
 import axios from 'axios';
+import { AppConfig } from "../config";
 
 export class Login extends Component {
+    
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            appMessageBeforeLogin: ""
+        }
+    }
+    
+    
     componentDidMount() {
-        window.history.replaceState(null, "Login", "/")
+        window.history.replaceState(null, "Login", "/");
+        this.getAppMessageBeforeLogin();
+    }
+    
+    async getAppMessageBeforeLogin() {
+        
+        try {
+            const res = await axios.get(AppConfig.APP_SERVER_BASE_URL + "api/app-message-before-login");
+
+            if (res.data) {
+                this.setState({
+                    appMessageBeforeLogin: res.data
+                });
+            }
+
+        } catch (err) {
+            console.log("api/app-message-before-login failed");
+        }
+
     }
     
     async loginClickHandler() {
         let user = await login(this.props.msalConfig);
 
-        const baseUrl = "https://mstwitterbot.azurewebsites.net/";
         let authHeaders = await getAuthHeadersSilent(this.props.msalConfig);
         try {
-            await axios.get(baseUrl + "api/get-distinct-handles", authHeaders);
+            await axios.get(AppConfig.APP_SERVER_BASE_URL +  + "api/get-distinct-handles", authHeaders);
         } catch (error) {
             if (error.response.status === 401) {
                 this.props.updateAuthState(null);
@@ -47,6 +75,9 @@ export class Login extends Component {
                         }
 
                     </div>
+                </div>
+                <div className="row justify-content-center login-container">
+                    {this.state.appMessageBeforeLogin}
                 </div>
             </div>
         );
