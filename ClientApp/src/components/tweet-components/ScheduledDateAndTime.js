@@ -2,14 +2,6 @@ import React, { Component, Link } from "react";
 import * as timeUtils from '../utils/time-util';
 
 export class ScheduledDateAndTime extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            now: new Date()
-        };
-    }
-
-    async componentDidMount() { }
 
   renderTimeComponent() {
     return (
@@ -17,7 +9,7 @@ export class ScheduledDateAndTime extends Component {
         id="tweet-time"
         type="time"
         className="form-control"
-        value={this.props.time || timeUtils.inputTimeFormat(this.state.now)}
+        value={this.props.time}
         onChange={(e) => this.props.timeChange(e)}
       />
     );
@@ -30,7 +22,7 @@ export class ScheduledDateAndTime extends Component {
         max="3000-12-31"
         min="1000-01-01"
         className="form-control"
-        value={this.props.date || timeUtils.inputDateFormat(this.state.now)}
+        value={this.props.date}
         onChange={(e) => this.props.dateChange(e)}
       />
     );
@@ -62,7 +54,7 @@ export class ScheduledDateAndTime extends Component {
           {this.renderTimeComponent()}
         </div>
         <div className="input-group mb-3">
-                <span className="badge">{timeUtils.timeZoneName(this.state.now)}/{timeUtils.timeZoneOffset(this.state.now)} </span>
+                <span className="badge">{timeUtils.timeZoneName(this.props.now)}/{timeUtils.timeZoneOffset(this.props.now)} </span>
         </div>
       </div>
     );
