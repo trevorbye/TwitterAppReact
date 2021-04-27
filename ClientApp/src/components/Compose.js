@@ -4,6 +4,7 @@ import { validateTweetBody } from './utils/twitter-text-util.js';
 import { TweetImageBlock } from './tweet-components/TweetImageBlock';
 import { CalendarModal } from './CalendarModal.js';
 import { fileToBase64 } from './utils/file-util';
+import * as timeUtils from './utils/time-util';
 import { ScheduledDateAndTime } from './tweet-components/ScheduledDateAndTime'
 import axios from 'axios';
 import { AppConfig } from "../config";
@@ -11,6 +12,10 @@ import { AppConfig } from "../config";
 export class Compose extends Component {
     constructor(props) {
         super(props);
+
+        const now = new Date()
+        const nowTime = timeUtils.inputTimeFormat(now)
+        const nowDate = timeUtils.inputDateFormat(now)
 
         this.state = {
             globalHandles: [],
@@ -21,12 +26,13 @@ export class Compose extends Component {
                 isValid: false,
                 bodyLenText: validateTweetBody("").textReturn
             },
-            dateInput: "",
-            timeInput: "",
+            dateInput: nowDate,
+            timeInput: nowTime,
             imageFileList: [],
             errorMessage: undefined,
             processingTweet: false,
-            calendarOpen: false
+            calendarOpen: false,
+            now: now
         }
     }
 
@@ -251,8 +257,9 @@ export class Compose extends Component {
                     edit={false}
                     time={this.state.timeInput}
                     date={this.state.dateInput}
-                    dateChange={this.state.dateChange}
-                    timeChange={this.state.timeChange}
+                    dateChange={(e) => this.dateChange(e)}
+                    timeChange={(e) => this.timeChange(e)}
+                    now={this.state.now}
                 />
                 
                 {
@@ -327,7 +334,6 @@ export class Compose extends Component {
                     key={"public"}
                     modalTitle={this.state.selectedHandle + " tweet calendar"}
                 />
-                
             </div>
         );
     }
