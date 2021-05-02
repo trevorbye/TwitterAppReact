@@ -4,6 +4,7 @@ import { TweetApproveCancelBlock } from './TweetApproveCancelBlock';
 import { WebjobPostedBlock } from './WebjobPostedBlock';
 import { EditPaneBlock } from './EditPaneBlock';
 import { TimeAndApprovalBlock } from './TimeAndApprovalBlock'
+import { TweetWithLines } from '../utils/twitter-text-util';
 
 export class BasicTweetBlock extends Component {
     constructor(props) {
@@ -54,7 +55,12 @@ export class BasicTweetBlock extends Component {
                     <small>{this.props.tweet.CreatedTime}</small>
                 </div>
 
-                <p className="mb-1 wrapped">{this.props.tweet.StatusBody}</p>
+                <p className="mb-1 wrapped">{
+                    this.state.editPaneExpanded ?
+                        this.props.tweet.StatusBody :
+                        <TweetWithLines tweet={this.props.tweet.StatusBody}></TweetWithLines>
+                }
+                </p>
 
                 {
                     this.props.tweet.ImageBase64Strings != null &&
