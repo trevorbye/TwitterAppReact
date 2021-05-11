@@ -29,6 +29,7 @@ export default class App extends Component {
     }
 
     async componentDidMount() {
+        console.log(`REACT_APP_CACHE_BUST = ${process.env["REACT_APP_CACHE_BUST"]}`);
         let cachedAuthToken = await initialCachedAuthCheck(this.state.msalConfig);
         this.setState({
             hasCheckedCachedAuth: true,
