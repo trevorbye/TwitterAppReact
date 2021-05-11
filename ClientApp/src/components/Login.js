@@ -41,7 +41,7 @@ export class Login extends Component {
 
         let authHeaders = await getAuthHeadersSilent(this.props.msalConfig);
         try {
-            await axios.get(AppConfig.APP_SERVER_BASE_URL +  + "api/get-distinct-handles", authHeaders);
+            await axios.get(AppConfig.APP_SERVER_BASE_URL + "api/get-distinct-handles", authHeaders);
         } catch (error) {
             if (error.response.status === 401) {
                 this.props.updateAuthState(null);

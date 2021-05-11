@@ -66,6 +66,18 @@ export class TemplateItem extends Component {
                                 onChange={(e) => this.templateDetailChange(e, "Title")}
                             />
                         </div>
+                        
+                        <div className="input-group mb-3">
+                            <div className="input-group-prepend">
+                                <span className="input-group-text">
+                                    Full GitHub Repository Url
+                                 </span>
+                            </div>
+                            <input id="template-fullrepourl" type="text" className="form-control"
+                                value={this.state.template.FullRepoUrl}
+                                onChange={(e) => this.templateDetailChange(e, "FullRepoUrl")}
+                            />
+                        </div>                        
 
 
                         <div className="d-flex w-100 justify-content-between mb-3">

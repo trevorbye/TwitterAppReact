@@ -10,30 +10,37 @@ import axios from 'axios';
 import { AppConfig } from "../config";
 
 export class Compose extends Component {
+    
+    componentNow = new Date();
+    
+    defaultState = {
+        selectedHandle: "",
+        bodyState: {
+            text: "",
+            isValid: false,
+            bodyLenText: validateTweetBody("").textReturn
+        },
+        dateInput: timeUtils.inputDateFormat(this.componentNow),
+        timeInput: timeUtils.inputTimeFormat(this.componentNow),
+        imageFileList: [],
+        errorMessage: undefined,
+        processingTweet: false
+    };
+    
     constructor(props) {
         super(props);
-
-        const now = new Date()
-        const nowTime = timeUtils.inputTimeFormat(now)
-        const nowDate = timeUtils.inputDateFormat(now)
 
         this.state = {
             globalHandles: [],
             publicHandleEvents: [],
-            selectedHandle: "",
-            bodyState: {
-                text: "",
-                isValid: false,
-                bodyLenText: validateTweetBody("").textReturn
-            },
-            dateInput: nowDate,
-            timeInput: nowTime,
-            imageFileList: [],
-            errorMessage: undefined,
-            processingTweet: false,
             calendarOpen: false,
-            now: now
+            now: this.componentNow,
+            ...this.defaultState
         }
+    }
+    
+    initializeState() {
+        this.setState(this.defaultState);
     }
 
     async componentDidMount() {
@@ -83,19 +90,7 @@ export class Compose extends Component {
             };
 
             this.props.addNewTweet(queueObject);
-            this.setState({
-                selectedHandle: "",
-                bodyState: {
-                    text: "",
-                    isValid: false,
-                    bodyLenText: validateTweetBody("").textReturn
-                },
-                dateInput: "",
-                timeInput: "",
-                imageFileList: [],
-                errorMessage: undefined,
-                processingTweet: false
-            });
+            this.initializeState();
         } catch (error) {
             console.log(error);
             if (error.response.status === 400) {

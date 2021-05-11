@@ -1,5 +1,5 @@
 ﻿import twttr from 'twitter-text';
-
+import React, { Fragment } from 'react';
 export function validateTweetBody(text) {
     const result = twttr.parseTweet(text);
     const maxChars = 280;
@@ -11,4 +11,14 @@ export function validateTweetBody(text) {
             isValid: isValid
         }
     }
+}
+
+export function TweetWithLines ({ tweet }) {
+   return tweet.split("\n").map(line => (
+    <Fragment >
+      {line}
+      <br />
+    </Fragment>
+  ));
+
 }
