@@ -43,6 +43,7 @@ export class Templates extends Component {
             TweetUser: "", // tweet creator
             HandleUser: "", // tweet approver
             Title: "Your new title",
+            FullRepoUrl:"", // https://github.com/Microsoft/Docs/azure-docs-pr
             ChangedThresholdPercentage: 100,
             Channel: "twitter",
             CodeChanges: 0,
