@@ -1,6 +1,6 @@
 {
   "name": "reactnetcoretemplate",
-  "version": "0.1.0",
+  "version": "1.0.2021051102",
   "private": true,
   "dependencies": {
     "axios": "^0.19.2",
@@ -41,7 +41,7 @@
   },
   "scripts": {
     "start": "rimraf ./build && react-scripts start",
-    "build": "react-scripts build",
+    "build": "cross-env REACT_APP_CACHE_BUST=20210511.02 react-scripts build",
     "test": "cross-env CI=true react-scripts test --env=jsdom --coverage",
     "eject": "react-scripts eject",
     "lint": "eslint ./src/"
