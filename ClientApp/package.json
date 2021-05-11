@@ -1,6 +1,6 @@
 {
   "name": "reactnetcoretemplate",
-  "version": "0.1.0",
+  "version": "20210511.02",
   "private": true,
   "dependencies": {
     "axios": "^0.19.2",
