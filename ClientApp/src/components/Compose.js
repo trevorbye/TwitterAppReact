@@ -209,8 +209,9 @@ export class Compose extends Component {
                 <p className="mb-3">
                     Select a handle, compose a tweet, and choose a time when the status will be posted to the account. The
                     request will be routed to the handle owner for approval. If the handle owner has made their tweet schedule public,
-                    click the calendar to view it. 
+                    click the calendar to view it. <br></br><br></br>Your tweet must follow <a href="https://microsoft.sharepoint.com/sites/CELAWeb-Marketing/SitePages/social-media-social-media-guidelines.aspx">Microsoft Global Readiness guidelines</a>.
                 </p>
+                
 
                 <div className="input-group mb-3">
                     <div className="input-group-prepend">
