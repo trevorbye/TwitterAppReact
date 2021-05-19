@@ -3,6 +3,9 @@ import { AccountPane } from './AccountPane';
 import { getAuthHeadersSilent } from './auth-utils/auth-config';
 import axios from 'axios';
 import { AppConfig } from "../config";
+import { getUserDataAsText } from './utils/database-utils'
+import { Link } from 'react-router-dom';
+import { DownloadButton } from "./utils/DownloadButton";
 
 export class Account extends Component {
     constructor(props) {
@@ -13,8 +16,13 @@ export class Account extends Component {
             handles: [],
             redirectUrl: null
         }
+        
+        // pass in msal config through this context
+        this.getUserData = this.getUserData.bind(this);
     }
 
+    
+    
     async componentDidMount() {
         let authHeaders = await getAuthHeadersSilent(this.props.msalConfig);
         let res = await axios.get(AppConfig.APP_SERVER_BASE_URL + "api/get-user-twitter-accounts", authHeaders);
@@ -94,8 +102,13 @@ export class Account extends Component {
 
         let authHeaders = await getAuthHeadersSilent(this.props.msalConfig);
         let response = await axios.get(AppConfig.APP_SERVER_BASE_URL + `api/twitter-auth-token`, authHeaders);
-        window.location.replace(`https://api.twitter.com/oauth/authenticate?oauth_token=${response.data}`);  
+        window.location.replace(`https://api.twitter.com/oauth/authenticate?oauth_token=${response.data}`);
     }
+    
+    async getUserData() {
+        return await getUserDataAsText(this.props.msalConfig);
+    }
+
 
     render() {
         return (
@@ -122,22 +135,34 @@ export class Account extends Component {
                         each handle to edit account settings. Configurable settings include enabling private account status, and account deletion.
                         If you designate an account as private, it only appears in <b>your</b> list of handles when composing a tweet.
                     </p>
+                    
+                    {(!this.state.isLoadingHandles && this.state.handles.length > 0) &&
+                        <DownloadButton
+                        asyncGetData={this.getUserData}
+                        fileName={"twitterapp-userdata.txt"}
+                        contentType={'text/txt'}
+                        buttonName={"Export my data"}
+                        />
+                    }
+                    
+                
+                
                     {this.state.isLoadingHandles && this.loadingQueueDiv()}
                     <div className="list-group">
                         {
-                            this.state.handles.map((handle, idx) => <AccountPane 
-                                handle={handle} 
+                            this.state.handles.map((handle, idx) => <AccountPane
+                                handle={handle}
                                 idx={idx}
                                 disableAutoTweets={(handle, idx) => this.disableAutoTweets(handle, idx)}
-                                enableAutoTweets={(handle, idx) => this.enableAutoTweets(handle, idx)} 
-                                togglePrivateAccount={(handle, idx, isPrivate) => this.togglePrivateAccount(handle, idx, isPrivate)} 
+                                enableAutoTweets={(handle, idx) => this.enableAutoTweets(handle, idx)}
+                                togglePrivateAccount={(handle, idx, isPrivate) => this.togglePrivateAccount(handle, idx, isPrivate)}
                                 deleteAccount={(handle, idx) => this.deleteAccount(handle, idx)}
                                 togglePublicSchedule={(handle, idx, isPublic) => this.toggleMakeSchedulePublic(handle, idx, isPublic)}
-                                />)
+                            />)
                         }
                     </div>
                 </div>
             </div>
-        ); 
+        );
     }
 }
